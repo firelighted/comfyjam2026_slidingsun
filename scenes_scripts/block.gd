@@ -86,8 +86,9 @@ func snap_to_position_from_row_col():
 
 func set_row_col_from_pos():
 	# save row/ col position based on current position to allow snapping to new location
-	i_row = round((position.x / PIXELS_PER_UNIT) - 0.5 * i_width)
-	i_col = round((position.y / PIXELS_PER_UNIT) - 0.5 * i_height)
+	self.i_row = round((position.x / PIXELS_PER_UNIT) - 0.5 * i_width)
+	self.i_col = round((position.y / PIXELS_PER_UNIT) - 0.5 * i_height)
+	return Vector2i(self.i_row, self.i_col)
 
 func _on_clickable_input_event(_viewport: Node, _event: InputEvent, _shape_idx: int) -> void:
 	just_selected.emit(block_id, i_row, i_col)

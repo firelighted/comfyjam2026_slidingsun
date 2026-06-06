@@ -74,7 +74,7 @@ func spawn_blocks():
 		for x in range(x_size):
 			var block_id = array[(y * x_size) + x]
 			if block_id not in complete_blocks:
-				print("(%d, %d) -> %d" % [x, y, block_id])
+				# print("(%d, %d) -> %d" % [x, y, block_id])
 				if block_id != EMPTY:
 					blocks.push_back(_create_block(block_id, x, y))
 					complete_blocks.push_back(block_id)
@@ -93,10 +93,16 @@ func receive_block_want_to_move(block_id, row, col, dir):
 func receive_block_just_selected(block_id, row, col):
 	for block in block_parent.get_children():
 		block.is_selected = (block.block_id == block_id)
+
 		if (block.block_id == block_id):
 			selected_block = block
 		else:
 			block.snap_to_position_from_row_col()
+		var row_col = block.set_row_col_from_pos()
+		
+		# update array NOT WORKING -- wrong values being set
+		#set_array(row_col.x, row_col.y, block_id)
+		#print_array()
 
 func init_array():
 	if len(array) < cells - 1: # pad with empty
@@ -106,9 +112,16 @@ func init_array():
 		push_warning("array longer than x_size * y_size")
 
 func print_array():
-	for y in range(y_size):
-		for x in range(x_size):
-			print("(%d, %d) -> %d" % [x, y, array[(y * x_size) + x]])
+	print(array)
+	#var output = ""
+	#for y in range(y_size):
+		#for x in range(x_size):
+			#output += " " + str(array[(y * x_size) + x]) + ","
+		#print(output)
+		#output = ""
+		#for x in range(x_size):
+			#print("(%d, %d) -> %d" % [x, y, array[(y * x_size) + x]])
+
 
 func get_array(x: int, y: int) -> int:
 	var idx = (y * x_size) + x
