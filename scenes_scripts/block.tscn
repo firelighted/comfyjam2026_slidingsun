@@ -1,0 +1,61 @@
+[gd_scene load_steps=7 format=3 uid="uid://c1nqrhcqdwaqy"]
+
+[ext_resource type="Script" path="res://scenes_scripts/block.gd" id="1_o3usp"]
+[ext_resource type="Texture2D" uid="uid://qlwb5s0awuw0" path="res://images/tiles/base_tile_white.png" id="2_80yha"]
+[ext_resource type="Texture2D" uid="uid://dir1qm5nt4uoj" path="res://images/tiles/selected_tile.png" id="3_lgxio"]
+[ext_resource type="Texture2D" uid="uid://cg14q0lo7puh1" path="res://images/palette.png" id="4_kqftf"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nichk"]
+size = Vector2(128, 128)
+
+[sub_resource type="LabelSettings" id="LabelSettings_g8qok"]
+font_size = 90
+font_color = Color(0, 0, 1, 1)
+
+[node name="Block" type="CharacterBody2D"]
+input_pickable = true
+script = ExtResource("1_o3usp")
+sprite_path = NodePath("Clickable/selected_texture")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_nichk")
+
+[node name="Clickable" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Clickable"]
+shape = SubResource("RectangleShape2D_nichk")
+
+[node name="base_texture" type="Sprite2D" parent="Clickable"]
+self_modulate = Color(0.231373, 0.0745098, 0.168627, 1)
+texture = ExtResource("2_80yha")
+region_rect = Rect2(45, 45, 405, 405)
+
+[node name="selected_texture" type="Sprite2D" parent="Clickable"]
+scale = Vector2(0.9, 0.9)
+texture = ExtResource("3_lgxio")
+
+[node name="Label" type="Label" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "-1"
+label_settings = SubResource("LabelSettings_g8qok")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="palette" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(-3, 81)
+texture = ExtResource("4_kqftf")
+
+[connection signal="input_event" from="Clickable" to="." method="_on_clickable_input_event"]

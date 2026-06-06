@@ -1,0 +1,102 @@
+[gd_scene load_steps=8 format=3 uid="uid://b68t311mpj4pr"]
+
+[ext_resource type="Script" path="res://block_manager.gd" id="1_5ua2j"]
+[ext_resource type="Texture2D" uid="uid://cg14q0lo7puh1" path="res://images/palette.png" id="2_31q7j"]
+[ext_resource type="Texture2D" uid="uid://l6c5b8gwc4ih" path="res://images/tiles/square.png" id="2_bb1j8"]
+[ext_resource type="Script" path="res://resources/level_resource.gd" id="2_s2dim"]
+[ext_resource type="Resource" uid="uid://sn8mpyosxvue" path="res://resources/level_0.tres" id="3_3qwf8"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lnwij"]
+size = Vector2(45, 615)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_h4aj0"]
+size = Vector2(615, 45)
+
+[node name="Node" type="Node"]
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TextureRect" type="TextureRect" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_31q7j")
+
+[node name="TextureRect2" type="TextureRect" parent="Control"]
+self_modulate = Color(1, 1, 1, 0.584314)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_bb1j8")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(59, 78)
+limit_left = 0
+limit_top = 0
+limit_right = 640
+limit_bottom = 640
+
+[node name="Main2D" type="Node2D" parent="." node_paths=PackedStringArray("blocks")]
+position = Vector2(64, 66)
+script = ExtResource("1_5ua2j")
+blocks = [null]
+levels = Array[ExtResource("2_s2dim")]([ExtResource("3_3qwf8")])
+
+[node name="bkgd" type="Sprite2D" parent="Main2D"]
+self_modulate = Color(1, 1, 1, 0.572549)
+position = Vector2(0, 1.43051e-06)
+scale = Vector2(4, 4)
+texture = ExtResource("2_bb1j8")
+offset = Vector2(65, 65.0249)
+
+[node name="bkgd decoration" type="Sprite2D" parent="Main2D"]
+visible = false
+self_modulate = Color(1, 1, 1, 0.380392)
+position = Vector2(344.5, 195.5)
+scale = Vector2(1.73542, 17.2187)
+texture = ExtResource("2_31q7j")
+
+[node name="BlockParent" type="Node2D" parent="Main2D"]
+
+[node name="palette" type="Sprite2D" parent="Main2D"]
+position = Vector2(323, -107)
+texture = ExtResource("2_31q7j")
+
+[node name="wall_left" type="StaticBody2D" parent="Main2D"]
+position = Vector2(-25, 255)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Main2D/wall_left"]
+shape = SubResource("RectangleShape2D_lnwij")
+
+[node name="wall_top" type="StaticBody2D" parent="Main2D"]
+position = Vector2(256, -18)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Main2D/wall_top"]
+shape = SubResource("RectangleShape2D_h4aj0")
+
+[node name="wall_top2" type="StaticBody2D" parent="Main2D"]
+position = Vector2(256, 542)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Main2D/wall_top2"]
+shape = SubResource("RectangleShape2D_h4aj0")
+
+[node name="wall_right" type="StaticBody2D" parent="Main2D"]
+position = Vector2(544, 255)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Main2D/wall_right"]
+shape = SubResource("RectangleShape2D_lnwij")
