@@ -11,9 +11,9 @@ size = Vector2(125, 125)
 
 [sub_resource type="LabelSettings" id="LabelSettings_g8qok"]
 font_size = 90
-font_color = Color(0, 0, 1, 1)
 
 [node name="Block" type="CharacterBody2D"]
+light_mask = 0
 input_pickable = true
 script = ExtResource("1_o3usp")
 sprite_path = NodePath("Clickable/selected_texture")
@@ -29,7 +29,6 @@ collision_mask = 0
 shape = SubResource("RectangleShape2D_nichk")
 
 [node name="base_texture" type="Sprite2D" parent="Clickable"]
-self_modulate = Color(0.231373, 0.0745098, 0.168627, 1)
 texture = ExtResource("2_80yha")
 region_rect = Rect2(45, 45, 405, 405)
 
@@ -37,27 +36,30 @@ region_rect = Rect2(45, 45, 405, 405)
 scale = Vector2(0.9, 0.9)
 texture = ExtResource("3_lgxio")
 
+[node name="special_texture" type="Sprite2D" parent="."]
+region_rect = Rect2(45, 45, 405, 405)
+
+[node name="palette" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(-3, 81)
+texture = ExtResource("4_kqftf")
+
 [node name="Label" type="Label" parent="."]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -11.5
-offset_right = 20.0
-offset_bottom = 11.5
+offset_left = -40.0
+offset_top = -62.0
+offset_right = 40.0
+offset_bottom = 62.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "-1"
 label_settings = SubResource("LabelSettings_g8qok")
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="palette" type="Sprite2D" parent="."]
-visible = false
-position = Vector2(-3, 81)
-texture = ExtResource("4_kqftf")
 
 [node name="DEBUG_array_idxs" type="Label" parent="."]
 offset_left = -20.0

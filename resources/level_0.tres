@@ -4,3 +4,6 @@
 
 [resource]
 script = ExtResource("1_fditp")
+easy_edit_array = Array[String](["0,1,2,3", "5,5,4,4", "5,5,6,7", "-1,-1, "])
+x_size = 4
+y_size = 4

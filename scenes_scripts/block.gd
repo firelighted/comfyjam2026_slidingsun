@@ -16,6 +16,8 @@ var is_dragging: bool = false
 @export var label_path : NodePath = "Label"
 @export var sprite_path : NodePath = "Clickable/Sprite2D"
 
+@export var special_texture : Texture = preload("res://images/tiles/sun.png")
+
 var collider
 var clickable
 var label
@@ -68,6 +70,8 @@ func set_variables(block_id, width: int, height: int, row: int, col: int):
 	position = Vector2(row + 0.5 * width, col + 0.5 * height) * PIXELS_PER_UNIT  
 	$Clickable.scale = Vector2(width, height)
 	$CollisionShape2D.scale = Vector2(width, height)
+	if block_id == 0:
+		$special_texture.texture = special_texture
 
 func get_input(): # arrow keys can move selected tile
 	var input_dir : Vector2 = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
@@ -97,6 +101,7 @@ func start_drag():
 
 func end_drag():
 	is_dragging = false
+	is_selected = false
 
 func get_drag():
 	if is_dragging:

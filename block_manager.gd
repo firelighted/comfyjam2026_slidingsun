@@ -1,12 +1,14 @@
 extends Node2D
 
 @export var block_parent_path : NodePath = "BlockParent"
+@export var level_button_parent_path : NodePath = "../UI/LevelButtonParent"
 @export var blocks : Array[Node]
 @export var levels : Array[LevelResource]
 var current_level = 0
 var block_prefab: PackedScene = preload("res://scenes_scripts/block.tscn")
 var block_parent : Node
 var selected_block: Node
+var level_button_parent: Node
 
 const EMPTY = -1
 
@@ -18,17 +20,33 @@ var cells  = x_size * y_size
 var is_dragging = false
 
 func _ready() -> void:
+	
+	block_parent = get_node(block_parent_path)
+	level_button_parent = get_node(level_button_parent_path)
+	var level_button_script = load("res://scenes_scripts/sibling_button.gd")
+	for i in range(len(levels)):
+		var button = Button.new()
+		button.script = level_button_script
+		button.set_script(level_button_script)
+		button.text = str(i)
+		button.sibling_button_pressed.connect(receive_level_button_pressed)
+		level_button_parent.add_child(button)
+	
+	load_level(0)
+	
+func load_level(new_level:int):
+	current_level = new_level
 	if current_level < len(levels):
-		array = levels[current_level].initial_array
+		array = levels[current_level].initial_array()
 		x_size = levels[current_level].x_size
 		y_size = levels[current_level].y_size
 	else:
 		print("Using default level, no valid current_level in levels array")
-	
-	block_parent = get_node(block_parent_path)
-	
 	init_array()
 	spawn_blocks()
+	
+func receive_level_button_pressed(sibling_idx: int):
+	load_level(sibling_idx)
 
 func _process(delta):
 	if selected_block:
@@ -74,6 +92,11 @@ func _unhandled_input(event):
 
 
 func spawn_blocks():
+	for block in block_parent.get_children():
+		block.queue_free()
+	blocks.clear()
+	selected_block = null
+	
 	var complete_blocks = []  # unique blocks, to prevent duplicates for large blocks
 	for y in range(y_size):
 		for x in range(x_size):
