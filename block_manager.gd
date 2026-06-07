@@ -2,6 +2,7 @@ extends Node2D
 
 @export var block_parent_path : NodePath = "BlockParent"
 @export var level_button_parent_path : NodePath = "../UI/LevelButtonParent"
+@export var levels_folder_path : String = "res://levels/"
 @export var blocks : Array[Node]
 @export var levels : Array[LevelResource]
 var current_level = 0
@@ -20,16 +21,19 @@ var cells  = x_size * y_size
 var is_dragging = false
 
 func _ready() -> void:
+	if not levels:
+		levels = get_levels_from_folder(levels_folder_path)
 	
 	block_parent = get_node(block_parent_path)
 	level_button_parent = get_node(level_button_parent_path)
+	# make buttons for choosing level
 	var level_button_prefab = preload("res://scenes_scripts/level_button.tscn")
 	for i in range(len(levels)):
 		var button = level_button_prefab.instantiate()
 		button.text = "Level " + str(i)
 		button.sibling_button_pressed.connect(receive_level_button_pressed)
 		level_button_parent.add_child(button)
-	
+	# start level 0
 	load_level(0)
 	
 func load_level(new_level:int):
@@ -42,6 +46,24 @@ func load_level(new_level:int):
 		print("Using default level, no valid current_level in levels array")
 	init_array()
 	spawn_blocks()
+	
+func get_levels_from_folder(folder_path: String):
+	var resources : Array[LevelResource] = []
+	var dir = DirAccess.open(folder_path)
+	if dir:
+		dir.list_dir_begin()
+		var file_name = dir.get_next()
+		while file_name != "":
+			if file_name.ends_with(".tres"):
+				var full_path = folder_path + "/" + file_name
+				var resource = load(full_path)
+				if resource:
+					resources.append(resource)
+			file_name = dir.get_next()
+	else:
+		printerr("Failed to open directory: ", folder_path)
+
+	return resources
 	
 func receive_level_button_pressed(sibling_idx: int):
 	load_level(sibling_idx)

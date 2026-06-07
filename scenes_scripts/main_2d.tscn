@@ -1,16 +1,12 @@
-[gd_scene load_steps=16 format=3 uid="uid://b68t311mpj4pr"]
+[gd_scene load_steps=12 format=3 uid="uid://b68t311mpj4pr"]
 
 [ext_resource type="Script" path="res://block_manager.gd" id="1_5ua2j"]
 [ext_resource type="Theme" uid="uid://dqbku2qxufg7j" path="res://theme/main_theme.tres" id="1_stk34"]
 [ext_resource type="Texture2D" uid="uid://cg14q0lo7puh1" path="res://images/palette.png" id="2_31q7j"]
 [ext_resource type="Texture2D" uid="uid://l6c5b8gwc4ih" path="res://images/tiles/square.png" id="2_bb1j8"]
-[ext_resource type="Script" path="res://resources/level_resource.gd" id="2_s2dim"]
-[ext_resource type="Resource" uid="uid://sn8mpyosxvue" path="res://resources/level_0.tres" id="3_3qwf8"]
 [ext_resource type="LabelSettings" uid="uid://b4qx5deogc1w8" path="res://theme/DEBUG_labelsetting.tres" id="3_ytdtc"]
 [ext_resource type="PackedScene" uid="uid://c1nqrhcqdwaqy" path="res://scenes_scripts/block.tscn" id="6_6y1a6"]
-[ext_resource type="Resource" uid="uid://ckbsgsgbj52rm" path="res://resources/level_1.tres" id="7_1e6qc"]
 [ext_resource type="Texture2D" uid="uid://cihbuf5w5dxhy" path="res://icon.svg" id="7_8hjc0"]
-[ext_resource type="Resource" uid="uid://cbstyn4856gcp" path="res://resources/level_2.tres" id="8_3cdgw"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ivpb4"]
 font_size = 27
@@ -89,11 +85,9 @@ limit_top = 0
 limit_right = 640
 limit_bottom = 640
 
-[node name="Main2D" type="Node2D" parent="." node_paths=PackedStringArray("blocks")]
+[node name="Main2D" type="Node2D" parent="."]
 position = Vector2(64, 66)
 script = ExtResource("1_5ua2j")
-blocks = [null]
-levels = Array[ExtResource("2_s2dim")]([ExtResource("3_3qwf8"), ExtResource("7_1e6qc"), ExtResource("8_3cdgw")])
 
 [node name="valid_tile_area_bkgd" type="Sprite2D" parent="Main2D"]
 self_modulate = Color(1, 1, 1, 0.572549)

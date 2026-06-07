@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://ciu533jcic12p"]
+
+[ext_resource type="Script" path="res://scenes_scripts/sibling_button.gd" id="1_th2g8"]
+
+[node name="LevelButton" type="Button"]
+text = "0"
+script = ExtResource("1_th2g8")
+
+[connection signal="pressed" from="." to="." method="_on_pressed"]
