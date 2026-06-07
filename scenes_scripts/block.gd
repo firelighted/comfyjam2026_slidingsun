@@ -24,11 +24,10 @@ var sprite
 const PIXELS_PER_UNIT = 130
 
 const THEME_COLORS = [
-	"#FBC697", # sandy
+	"#FBC697", # sandy yellow brown
 	"#732F54",
 	"#F7738E",
 	"#F6A8B3",
-	"#FFEDD7",
 	"#D1505B",
 	"#5AB9A2",
 	"#6ED6A4",
@@ -40,14 +39,15 @@ const THEME_COLORS = [
 	"#B2555D",
 	"#4C2242",
 	"#3B132B", # dark purple
+	"#FFEDD7", # palest yellow
 ]
 
 var arrow_key_speed = 300
 var mouse_drag_speed = 10
 
-var drag_start : Vector2 =Vector2.ZERO
-var drag_end : Vector2 =Vector2.ZERO
-var drag_offset : Vector2 =Vector2.ZERO
+var drag_start : Vector2  = Vector2.ZERO
+var drag_end : Vector2    = Vector2.ZERO
+var drag_offset : Vector2 = Vector2.ZERO
 
 
 func _ready() -> void:
@@ -55,6 +55,7 @@ func _ready() -> void:
 	clickable = get_node(clickable_path)
 	label = get_node(label_path)
 	sprite = get_node(sprite_path)
+	set_row_col_from_pos()
 
 func set_variables(block_id, width: int, height: int, row: int, col: int):
 	self.block_id = block_id
@@ -88,10 +89,10 @@ func start_drag():
 	drag_start = get_global_mouse_position()
 	drag_offset = get_global_mouse_position() - global_position
 	is_dragging = true
-	$"../../../mouseclick".global_position = drag_start
-	$"../../../dragoffset".clear_points()
-	$"../../../dragoffset".add_point(get_global_mouse_position())
-	$"../../../dragoffset".add_point(global_position)
+	$"../../../DEBUG_mouseclick".global_position = drag_start
+	$"../../../DEBUG_dragoffset".clear_points()
+	$"../../../DEBUG_dragoffset".add_point(get_global_mouse_position())
+	$"../../../DEBUG_dragoffset".add_point(global_position)
 
 
 func end_drag():
@@ -114,7 +115,7 @@ func _process(_delta)-> void:
 	if is_selected != sprite.visible:
 		sprite.visible = is_selected
 	if is_selected:
-		sprite.self_modulate = THEME_COLORS[12] if is_dragging else THEME_COLORS[9]
+		sprite.self_modulate = Color.WHITE if is_dragging else Color(255,255,255,0.5)
 
 func snap_to_position_from_row_col():
 	var new_position = Vector2(i_row + 0.5 * i_width, i_col + 0.5 * i_height) * PIXELS_PER_UNIT
@@ -124,9 +125,10 @@ func snap_to_position_from_row_col():
 
 func set_row_col_from_pos():
 	# save row/ col position based on current position to allow snapping to new location
-	self.i_row = round((position.x / PIXELS_PER_UNIT) - 0.5 * i_width)
-	self.i_col = round((position.y / PIXELS_PER_UNIT) - 0.5 * i_height)
-	return Vector2i(self.i_row, self.i_col)
+	i_row = round((position.x / PIXELS_PER_UNIT) - 0.5 * i_width)
+	i_col = round((position.y / PIXELS_PER_UNIT) - 0.5 * i_height)
+	$DEBUG_array_idxs.text = str(i_row)+ ", " + str(i_col)
+	return Vector2i(i_row, i_col)
 
 func _on_clickable_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if event is InputEventMouseButton:
@@ -136,3 +138,4 @@ func _on_clickable_input_event(_viewport: Node, event: InputEvent, _shape_idx: i
 				start_drag()
 			else:
 				end_drag()
+				set_row_col_from_pos()

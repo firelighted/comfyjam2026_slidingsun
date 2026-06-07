@@ -1,10 +1,11 @@
-[gd_scene load_steps=12 format=3 uid="uid://b68t311mpj4pr"]
+[gd_scene load_steps=13 format=3 uid="uid://b68t311mpj4pr"]
 
 [ext_resource type="Script" path="res://block_manager.gd" id="1_5ua2j"]
 [ext_resource type="Texture2D" uid="uid://cg14q0lo7puh1" path="res://images/palette.png" id="2_31q7j"]
 [ext_resource type="Texture2D" uid="uid://l6c5b8gwc4ih" path="res://images/tiles/square.png" id="2_bb1j8"]
 [ext_resource type="Script" path="res://resources/level_resource.gd" id="2_s2dim"]
 [ext_resource type="Resource" uid="uid://sn8mpyosxvue" path="res://resources/level_0.tres" id="3_3qwf8"]
+[ext_resource type="LabelSettings" uid="uid://b4qx5deogc1w8" path="res://theme/DEBUG_labelsetting.tres" id="3_ytdtc"]
 [ext_resource type="PackedScene" uid="uid://c1nqrhcqdwaqy" path="res://scenes_scripts/block.tscn" id="6_6y1a6"]
 [ext_resource type="Texture2D" uid="uid://cihbuf5w5dxhy" path="res://icon.svg" id="7_8hjc0"]
 
@@ -63,6 +64,15 @@ offset_bottom = 53.0
 text = "Click and drag or use arrow keys"
 label_settings = SubResource("LabelSettings_ivpb4")
 
+[node name="DEBUG_instructions" type="Label" parent="UI"]
+layout_mode = 0
+offset_left = 104.0
+offset_top = 600.0
+offset_right = 283.0
+offset_bottom = 623.0
+text = "RED is for debug things"
+label_settings = ExtResource("3_ytdtc")
+
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(59, 78)
 limit_left = 0
@@ -116,12 +126,15 @@ position = Vector2(552, 255)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Main2D/wall_right"]
 shape = SubResource("RectangleShape2D_lnwij")
 
-[node name="mouseclick" type="Sprite2D" parent="."]
+[node name="DEBUG_mouseclick" type="Sprite2D" parent="."]
+visible = false
+self_modulate = Color(1, 0, 0, 1)
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("7_8hjc0")
 
-[node name="dragoffset" type="Line2D" parent="."]
-points = PackedVector2Array(500, 500, 355, 355, 2313, 1232)
-width = 50.0
+[node name="DEBUG_dragoffset" type="Line2D" parent="."]
+visible = false
+points = PackedVector2Array(-10, -10, -50, 400)
+width = 30.0
 width_curve = SubResource("Curve_ihapv")
 default_color = Color(1, 0, 0, 1)

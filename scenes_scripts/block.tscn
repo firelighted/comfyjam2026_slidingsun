@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://c1nqrhcqdwaqy"]
+[gd_scene load_steps=8 format=3 uid="uid://c1nqrhcqdwaqy"]
 
 [ext_resource type="Script" path="res://scenes_scripts/block.gd" id="1_o3usp"]
 [ext_resource type="Texture2D" uid="uid://qlwb5s0awuw0" path="res://images/tiles/base_tile_white.png" id="2_80yha"]
 [ext_resource type="Texture2D" uid="uid://dir1qm5nt4uoj" path="res://images/tiles/selected_tile.png" id="3_lgxio"]
 [ext_resource type="Texture2D" uid="uid://cg14q0lo7puh1" path="res://images/palette.png" id="4_kqftf"]
+[ext_resource type="LabelSettings" uid="uid://b4qx5deogc1w8" path="res://theme/DEBUG_labelsetting.tres" id="5_280uh"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nichk"]
 size = Vector2(125, 125)
@@ -33,7 +34,6 @@ texture = ExtResource("2_80yha")
 region_rect = Rect2(45, 45, 405, 405)
 
 [node name="selected_texture" type="Sprite2D" parent="Clickable"]
-self_modulate = Color(0.329412, 0.603922, 0.552941, 1)
 scale = Vector2(0.9, 0.9)
 texture = ExtResource("3_lgxio")
 
@@ -58,5 +58,13 @@ vertical_alignment = 1
 visible = false
 position = Vector2(-3, 81)
 texture = ExtResource("4_kqftf")
+
+[node name="DEBUG_array_idxs" type="Label" parent="."]
+offset_left = -20.0
+offset_top = 38.0
+offset_right = 20.0
+offset_bottom = 61.0
+text = "1,2"
+label_settings = ExtResource("5_280uh")
 
 [connection signal="input_event" from="Clickable" to="." method="_on_clickable_input_event"]
