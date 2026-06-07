@@ -23,12 +23,10 @@ func _ready() -> void:
 	
 	block_parent = get_node(block_parent_path)
 	level_button_parent = get_node(level_button_parent_path)
-	var level_button_script = load("res://scenes_scripts/sibling_button.gd")
+	var level_button_prefab = preload("res://scenes_scripts/level_button.tscn")
 	for i in range(len(levels)):
-		var button = Button.new()
-		button.script = level_button_script
-		button.set_script(level_button_script)
-		button.text = str(i)
+		var button = level_button_prefab.instantiate()
+		button.text = "Level " + str(i)
 		button.sibling_button_pressed.connect(receive_level_button_pressed)
 		level_button_parent.add_child(button)
 	
