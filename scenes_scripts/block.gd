@@ -10,6 +10,7 @@ var i_height = 1
 var i_row = -1
 var i_col = -1
 var is_selected: bool = false
+var is_dragging: bool = false
 @export var collider_path : NodePath = "CollisionShape2D"
 @export var clickable_path : NodePath = "Clickable"
 @export var label_path : NodePath = "Label"
@@ -23,7 +24,7 @@ var sprite
 const PIXELS_PER_UNIT = 130
 
 const THEME_COLORS = [
-	"#FBC697",
+	"#FBC697", # sandy
 	"#732F54",
 	"#F7738E",
 	"#F6A8B3",
@@ -32,16 +33,22 @@ const THEME_COLORS = [
 	"#5AB9A2",
 	"#6ED6A4",
 	"#D2EC99",
-	"#549A8D",
+	"#549A8D", # dull teal
 	"#367C50",
 	"#702D51",
 	"#8B3A49",
 	"#B2555D",
 	"#4C2242",
-	"#3B132B",
+	"#3B132B", # dark purple
 ]
 
 var arrow_key_speed = 300
+var mouse_drag_speed = 2000
+
+var drag_start : Vector2 =Vector2.ZERO
+var drag_end : Vector2 =Vector2.ZERO
+var drag_offset : Vector2 =Vector2.ZERO
+
 
 func _ready() -> void:
 	collider = get_node(collider_path)
@@ -68,21 +75,46 @@ func get_input(): # arrow keys can move selected tile
 
 func _physics_process(delta):
 	if is_selected:
-		get_input()
-		get_drag()
+		if is_dragging: 
+			get_drag()
+		else: 
+			get_input()
 		set_row_col_from_pos()
-		move_and_collide(velocity * delta)
-	
+		move_and_slide()
+
+
+func start_drag():
+	drag_start = get_global_mouse_position()
+	drag_offset = drag_start - global_position
+	is_dragging = true
+
+
+func end_drag():
+	is_dragging = false
 
 func get_drag():
-	pass
+	if is_dragging:
+		var simple_dir = (get_global_mouse_position() - global_position - drag_offset)
+		if abs( simple_dir.x) > abs( simple_dir.y):
+			simple_dir = Vector2(sign(simple_dir.x), 0)
+		else:
+			simple_dir = Vector2(0, sign(simple_dir.y))
+			
+		if velocity.length_squared() < 100:
+			velocity += simple_dir * mouse_drag_speed * 0.5
+		# velocity = (get_global_mouse_position() - global_position).normalized() * mouse_drag_speed
 
 func _process(_delta)-> void:
 	if is_selected != sprite.visible:
 		sprite.visible = is_selected
+	if is_selected:
+		sprite.self_modulate = THEME_COLORS[12] if is_dragging else THEME_COLORS[9]
 
 func snap_to_position_from_row_col():
-	position = Vector2(i_row + 0.5 * i_width, i_col + 0.5 * i_height) * PIXELS_PER_UNIT
+	var new_position = Vector2(i_row + 0.5 * i_width, i_col + 0.5 * i_height) * PIXELS_PER_UNIT
+	if (position - new_position).length_squared() < 5000:
+		position = new_position
+		
 
 func set_row_col_from_pos():
 	# save row/ col position based on current position to allow snapping to new location
@@ -90,5 +122,8 @@ func set_row_col_from_pos():
 	self.i_col = round((position.y / PIXELS_PER_UNIT) - 0.5 * i_height)
 	return Vector2i(self.i_row, self.i_col)
 
-func _on_clickable_input_event(_viewport: Node, _event: InputEvent, _shape_idx: int) -> void:
-	just_selected.emit(block_id, i_row, i_col)
+func _on_clickable_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			if event.is_pressed():
+				just_selected.emit(block_id, i_row, i_col)

@@ -29,7 +29,11 @@ func _ready() -> void:
 	
 	init_array()
 	spawn_blocks()
-	
+
+func _process(delta):
+	if selected_block:
+		selected_block.is_dragging = is_dragging
+
 func get_block_width(block_id):
 	var width = 0
 	for y in range(y_size):
@@ -61,11 +65,16 @@ func _unhandled_input(event):
 			if event.is_pressed():
 				print("start drag")
 				drag_start = event.position
+				if selected_block:
+					selected_block.start_drag()
 				is_dragging = true
 			else:
 				print("stop drag")
 				drag_end = event.position
 				is_dragging = false
+				if selected_block:
+					selected_block.end_drag()
+			
 
 
 func spawn_blocks():
@@ -95,7 +104,10 @@ func receive_block_just_selected(block_id, row, col):
 		block.is_selected = (block.block_id == block_id)
 
 		if (block.block_id == block_id):
+			if selected_block:
+				selected_block.is_dragging = false # finish old drag
 			selected_block = block
+			selected_block.is_dragging = false
 		else:
 			block.snap_to_position_from_row_col()
 		var row_col = block.set_row_col_from_pos()
