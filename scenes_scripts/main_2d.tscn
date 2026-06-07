@@ -1,16 +1,26 @@
-[gd_scene load_steps=8 format=3 uid="uid://b68t311mpj4pr"]
+[gd_scene load_steps=12 format=3 uid="uid://b68t311mpj4pr"]
 
 [ext_resource type="Script" path="res://block_manager.gd" id="1_5ua2j"]
 [ext_resource type="Texture2D" uid="uid://cg14q0lo7puh1" path="res://images/palette.png" id="2_31q7j"]
 [ext_resource type="Texture2D" uid="uid://l6c5b8gwc4ih" path="res://images/tiles/square.png" id="2_bb1j8"]
 [ext_resource type="Script" path="res://resources/level_resource.gd" id="2_s2dim"]
 [ext_resource type="Resource" uid="uid://sn8mpyosxvue" path="res://resources/level_0.tres" id="3_3qwf8"]
+[ext_resource type="PackedScene" uid="uid://c1nqrhcqdwaqy" path="res://scenes_scripts/block.tscn" id="6_6y1a6"]
+[ext_resource type="Texture2D" uid="uid://cihbuf5w5dxhy" path="res://icon.svg" id="7_8hjc0"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_ivpb4"]
+font_size = 27
+font_color = Color(0, 0, 0, 1)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lnwij"]
 size = Vector2(45, 615)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_h4aj0"]
 size = Vector2(615, 45)
+
+[sub_resource type="Curve" id="Curve_ihapv"]
+_data = [Vector2(0, 0.296703), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
 
 [node name="Node" type="Node"]
 
@@ -44,6 +54,15 @@ grow_vertical = 2
 mouse_filter = 2
 texture = ExtResource("2_bb1j8")
 
+[node name="Label" type="Label" parent="UI"]
+layout_mode = 0
+offset_left = 80.0
+offset_top = 16.0
+offset_right = 502.0
+offset_bottom = 53.0
+text = "Click and drag or use arrow keys"
+label_settings = SubResource("LabelSettings_ivpb4")
+
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(59, 78)
 limit_left = 0
@@ -65,6 +84,9 @@ texture = ExtResource("2_bb1j8")
 offset = Vector2(65, 65.0249)
 
 [node name="BlockParent" type="Node2D" parent="Main2D"]
+
+[node name="Block" parent="Main2D/BlockParent" instance=ExtResource("6_6y1a6")]
+position = Vector2(-160, -162)
 
 [node name="palette" type="Sprite2D" parent="Main2D"]
 position = Vector2(323, -107)
@@ -93,3 +115,13 @@ position = Vector2(552, 255)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Main2D/wall_right"]
 shape = SubResource("RectangleShape2D_lnwij")
+
+[node name="mouseclick" type="Sprite2D" parent="."]
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("7_8hjc0")
+
+[node name="dragoffset" type="Line2D" parent="."]
+points = PackedVector2Array(500, 500, 355, 355, 2313, 1232)
+width = 50.0
+width_curve = SubResource("Curve_ihapv")
+default_color = Color(1, 0, 0, 1)

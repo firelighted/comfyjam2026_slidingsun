@@ -65,15 +65,15 @@ func _unhandled_input(event):
 			if event.is_pressed():
 				print("start drag")
 				drag_start = event.position
-				if selected_block:
-					selected_block.start_drag()
+				#if selected_block:
+					#selected_block.start_drag()
 				is_dragging = true
 			else:
 				print("stop drag")
 				drag_end = event.position
 				is_dragging = false
-				if selected_block:
-					selected_block.end_drag()
+				#if selected_block:
+					#selected_block.end_drag()
 			
 
 
@@ -113,8 +113,9 @@ func receive_block_just_selected(block_id, row, col):
 		var row_col = block.set_row_col_from_pos()
 		
 		# update array NOT WORKING -- wrong values being set
-		#set_array(row_col.x, row_col.y, block_id)
-		#print_array()
+		# set_array(block.i_row, block.i_col, block.block_id)  # doesn't change
+		#set_array(row_col.x, row_col.y, block.block_id)
+	#print_array()
 
 func init_array():
 	if len(array) < cells - 1: # pad with empty

@@ -43,7 +43,7 @@ const THEME_COLORS = [
 ]
 
 var arrow_key_speed = 300
-var mouse_drag_speed = 2000
+var mouse_drag_speed = 10
 
 var drag_start : Vector2 =Vector2.ZERO
 var drag_end : Vector2 =Vector2.ZERO
@@ -74,6 +74,7 @@ func get_input(): # arrow keys can move selected tile
 	want_to_move.emit(block_id, i_row, i_col, input_dir)
 
 func _physics_process(delta):
+	# velocity approach
 	if is_selected:
 		if is_dragging: 
 			get_drag()
@@ -85,8 +86,12 @@ func _physics_process(delta):
 
 func start_drag():
 	drag_start = get_global_mouse_position()
-	drag_offset = drag_start - global_position
+	drag_offset = get_global_mouse_position() - global_position
 	is_dragging = true
+	$"../../../mouseclick".global_position = drag_start
+	$"../../../dragoffset".clear_points()
+	$"../../../dragoffset".add_point(get_global_mouse_position())
+	$"../../../dragoffset".add_point(global_position)
 
 
 func end_drag():
@@ -96,12 +101,13 @@ func get_drag():
 	if is_dragging:
 		var simple_dir = (get_global_mouse_position() - global_position - drag_offset)
 		if abs( simple_dir.x) > abs( simple_dir.y):
-			simple_dir = Vector2(sign(simple_dir.x), 0)
+			simple_dir = Vector2((simple_dir.x), 0)
 		else:
-			simple_dir = Vector2(0, sign(simple_dir.y))
+			simple_dir = Vector2(0, (simple_dir.y))
+		velocity = simple_dir * mouse_drag_speed
 			
 		if velocity.length_squared() < 100:
-			velocity += simple_dir * mouse_drag_speed * 0.5
+			velocity = Vector2.ZERO
 		# velocity = (get_global_mouse_position() - global_position).normalized() * mouse_drag_speed
 
 func _process(_delta)-> void:
@@ -127,3 +133,6 @@ func _on_clickable_input_event(_viewport: Node, event: InputEvent, _shape_idx: i
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if event.is_pressed():
 				just_selected.emit(block_id, i_row, i_col)
+				start_drag()
+			else:
+				end_drag()

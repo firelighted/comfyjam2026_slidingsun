@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://cg14q0lo7puh1" path="res://images/palette.png" id="4_kqftf"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nichk"]
-size = Vector2(128, 128)
+size = Vector2(125, 125)
 
 [sub_resource type="LabelSettings" id="LabelSettings_g8qok"]
 font_size = 90

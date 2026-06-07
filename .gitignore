@@ -3,3 +3,5 @@
 /android/
 *.import
 *.tmp
+*.kra~
+*.kra-autosave.kra
