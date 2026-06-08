@@ -68,7 +68,7 @@ func get_levels_from_folder(folder_path: String):
 func receive_level_button_pressed(sibling_idx: int):
 	load_level(sibling_idx)
 
-func _process(delta):
+func _process(_delta):
 	if selected_block:
 		selected_block.is_dragging = is_dragging
 

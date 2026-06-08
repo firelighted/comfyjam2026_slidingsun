@@ -2,11 +2,11 @@
 
 [ext_resource type="Script" path="res://block_manager.gd" id="1_5ua2j"]
 [ext_resource type="Theme" uid="uid://dqbku2qxufg7j" path="res://theme/main_theme.tres" id="1_stk34"]
-[ext_resource type="Texture2D" uid="uid://cg14q0lo7puh1" path="res://images/palette.png" id="2_31q7j"]
-[ext_resource type="Texture2D" uid="uid://l6c5b8gwc4ih" path="res://images/tiles/square.png" id="2_bb1j8"]
+[ext_resource type="Texture2D" uid="uid://tmeqmnimt82m" path="res://images/palette.png" id="2_31q7j"]
+[ext_resource type="Texture2D" uid="uid://c0erbyrf7daro" path="res://images/tiles/square.png" id="2_bb1j8"]
 [ext_resource type="LabelSettings" uid="uid://b4qx5deogc1w8" path="res://theme/DEBUG_labelsetting.tres" id="3_ytdtc"]
 [ext_resource type="PackedScene" uid="uid://c1nqrhcqdwaqy" path="res://scenes_scripts/block.tscn" id="6_6y1a6"]
-[ext_resource type="Texture2D" uid="uid://cihbuf5w5dxhy" path="res://icon.svg" id="7_8hjc0"]
+[ext_resource type="Texture2D" uid="uid://cpn4chu647sc0" path="res://icon.svg" id="7_8hjc0"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ivpb4"]
 font_size = 27

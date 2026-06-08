@@ -78,7 +78,7 @@ func get_input(): # arrow keys can move selected tile
 	velocity = input_dir * arrow_key_speed
 	want_to_move.emit(block_id, i_row, i_col, input_dir)
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	# velocity approach
 	if is_selected:
 		if is_dragging: 
@@ -102,6 +102,7 @@ func start_drag():
 func end_drag():
 	is_dragging = false
 	is_selected = false
+	snap_to_position_from_row_col()
 
 func get_drag():
 	if is_dragging:

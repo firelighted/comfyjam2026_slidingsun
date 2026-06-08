@@ -1,9 +1,9 @@
 [gd_scene load_steps=8 format=3 uid="uid://c1nqrhcqdwaqy"]
 
 [ext_resource type="Script" path="res://scenes_scripts/block.gd" id="1_o3usp"]
-[ext_resource type="Texture2D" uid="uid://qlwb5s0awuw0" path="res://images/tiles/base_tile_white.png" id="2_80yha"]
-[ext_resource type="Texture2D" uid="uid://dir1qm5nt4uoj" path="res://images/tiles/selected_tile.png" id="3_lgxio"]
-[ext_resource type="Texture2D" uid="uid://cg14q0lo7puh1" path="res://images/palette.png" id="4_kqftf"]
+[ext_resource type="Texture2D" uid="uid://b8frk5eo3s0gi" path="res://images/tiles/base_tile_white.png" id="2_80yha"]
+[ext_resource type="Texture2D" uid="uid://dqvjyshmb4s2v" path="res://images/tiles/selected_tile.png" id="3_lgxio"]
+[ext_resource type="Texture2D" uid="uid://tmeqmnimt82m" path="res://images/palette.png" id="4_kqftf"]
 [ext_resource type="LabelSettings" uid="uid://b4qx5deogc1w8" path="res://theme/DEBUG_labelsetting.tres" id="5_280uh"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nichk"]
