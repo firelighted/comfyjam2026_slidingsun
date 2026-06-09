@@ -13,7 +13,7 @@ var level_button_parent: Node
 
 const EMPTY = -1
 
-var array = [0,1,2,2,4,EMPTY,EMPTY,3, 6,6,7]
+var array = [0,1,2,2,4,EMPTY,EMPTY,3,6,6,7]
 var x_size = 4
 var y_size = 5
 var cells  = x_size * y_size
@@ -78,9 +78,11 @@ func get_block_width(block_id):
 		for x in range(x_size):
 			if get_array(x, y) == block_id:
 				width += 1
+		
 		# assume rect blocks
 		if width: # only check the row containing the block
 			return width
+	
 	return width
 			
 func get_block_height(block_id):
@@ -89,9 +91,11 @@ func get_block_height(block_id):
 		for y in range(y_size):
 			if get_array(x, y) == block_id:
 				height += 1
+		
 		# assume rect blocks
 		if height: # only check the first col containing the block
 			return height
+	
 	return height
 	
 var drag_start = Vector2.ZERO
@@ -148,11 +152,14 @@ func receive_block_just_selected(block_id, row, col):
 			selected_block.is_dragging = false
 		else:
 			block.snap_to_position_from_row_col()
+			
+		var prev_x = block.i_col
+		var prev_y = block.i_row
 		var row_col = block.set_row_col_from_pos()
 		
 		# update array NOT WORKING -- wrong values being set
 		# set_array(block.i_row, block.i_col, block.block_id)  # doesn't change
-		set_array(row_col.x, row_col.y, block.block_id)
+		set_array(prev_x, prev_y, row_col.x, row_col.y, block.block_id)
 	print_array()
 
 func init_array():
@@ -178,6 +185,12 @@ func get_array(x: int, y: int) -> int:
 	var idx = (y * x_size) + x
 	return array[idx]
 
-func set_array(x: int, y: int, val: int):
+func set_array(prev_x: int, prev_y: int, x: int, y: int, val: int):
 	var idx = (y * x_size) + x
 	array[idx] = val
+	
+	var del_idx = (prev_y * x_size) + prev_x
+	array[del_idx] = -1
+
+func check_move_legality(block_id: int, direction: int) -> bool:
+	return true

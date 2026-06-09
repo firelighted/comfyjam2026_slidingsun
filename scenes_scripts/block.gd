@@ -4,9 +4,12 @@ class_name Block
 signal want_to_move(block_id, i_row, i_col, dir: Vector2)
 signal just_selected(block_id, i_row, i_col)
 
+@onready var main_node = get_tree().get_root().get_node('Node').get_node('Main2D')
+
 var block_id = -1
 var i_width = 1
 var i_height = 1
+# var grid_pos = Vector2(-1, -1) TODO: refactor i_row and i_col to this
 var i_row = -1
 var i_col = -1
 var is_selected: bool = false
@@ -106,11 +109,23 @@ func end_drag():
 func get_drag():
 	if is_dragging:
 		var overall_offset = get_global_mouse_position() - drag_start
+		var legal_move = true
 		
 		if abs( overall_offset.x) > abs( overall_offset.y):
-			overall_offset = Vector2((overall_offset.x), 0)
+			overall_offset = Vector2(overall_offset.x, 0)
+
+			var direction = 1 if overall_offset.x > 0 else -1
+
+			legal_move = main_node.check_move_legality(block_id, direction)
 		else:
-			overall_offset = Vector2(0, (overall_offset.y))
+			overall_offset = Vector2(0, overall_offset.y)
+			
+			var direction = 1 if overall_offset.y > 0 else -1
+
+			legal_move = main_node.check_move_legality(block_id, direction)
+		
+		if !legal_move:
+			overall_offset = Vector2.ZERO
 		
 		position = drag_start_pos + overall_offset
 
