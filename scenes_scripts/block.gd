@@ -48,8 +48,7 @@ var arrow_key_speed = 300
 var mouse_drag_speed = 10
 
 var drag_start : Vector2  = Vector2.ZERO
-var drag_end : Vector2    = Vector2.ZERO
-var drag_offset : Vector2 = Vector2.ZERO
+var drag_start_pos: Vector2 = Vector2.ZERO
 
 
 func _ready() -> void:
@@ -91,8 +90,8 @@ func _physics_process(_delta):
 
 func start_drag():
 	drag_start = get_global_mouse_position()
-	drag_offset = get_global_mouse_position() - global_position
 	is_dragging = true
+	drag_start_pos = position
 	$"../../../DEBUG_mouseclick".global_position = drag_start
 	$"../../../DEBUG_dragoffset".clear_points()
 	$"../../../DEBUG_dragoffset".add_point(get_global_mouse_position())
@@ -106,16 +105,14 @@ func end_drag():
 
 func get_drag():
 	if is_dragging:
-		var simple_dir = (get_global_mouse_position() - global_position - drag_offset)
-		if abs( simple_dir.x) > abs( simple_dir.y):
-			simple_dir = Vector2((simple_dir.x), 0)
+		var overall_offset = get_global_mouse_position() - drag_start
+		
+		if abs( overall_offset.x) > abs( overall_offset.y):
+			overall_offset = Vector2((overall_offset.x), 0)
 		else:
-			simple_dir = Vector2(0, (simple_dir.y))
-		velocity = simple_dir * mouse_drag_speed
-			
-		if velocity.length_squared() < 100:
-			velocity = Vector2.ZERO
-		# velocity = (get_global_mouse_position() - global_position).normalized() * mouse_drag_speed
+			overall_offset = Vector2(0, (overall_offset.y))
+		
+		position = drag_start_pos + overall_offset
 
 func _process(_delta)-> void:
 	if is_selected != sprite.visible:

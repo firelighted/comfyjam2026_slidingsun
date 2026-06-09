@@ -108,7 +108,6 @@ func _unhandled_input(event):
 				print("stop drag")
 				drag_end = event.position
 				is_dragging = false
-			
 
 
 func spawn_blocks():
