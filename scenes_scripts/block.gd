@@ -1,17 +1,14 @@
 extends CharacterBody2D
 class_name Block
 
-signal want_to_move(block_id, i_row, i_col, dir: Vector2)
-signal just_selected(block_id, i_row, i_col)
+signal want_to_move(block_id: int, grid_pos: Vector2, dir: Vector2)
+signal just_selected(block_id: int, grid_pos: Vector2)
 
 @onready var main_node = get_tree().get_root().get_node('Node').get_node('Main2D')
 
 var block_id = -1
-var i_width = 1
-var i_height = 1
-# var grid_pos = Vector2(-1, -1) TODO: refactor i_row and i_col to this
-var i_row = -1
-var i_col = -1
+var dims = Vector2(1, 1)
+var grid_pos = Vector2(-1, -1)
 var is_selected: bool = false
 var is_dragging: bool = false
 @export var collider_path : NodePath = "CollisionShape2D"
@@ -63,10 +60,10 @@ func _ready() -> void:
 
 func set_variables(block_id, width: int, height: int, row: int, col: int):
 	self.block_id = block_id
-	self.i_width = width
-	self.i_height = height
-	self.i_row = row
-	self.i_col = col
+	self.dims.x = width
+	self.dims.y = height
+	self.grid_pos.x = row
+	self.grid_pos.y = col
 	$Clickable/base_texture.self_modulate = Color(THEME_COLORS[block_id  % len(THEME_COLORS)])
 	$Label.text = str(block_id)
 	position = Vector2(row + 0.5 * width, col + 0.5 * height) * PIXELS_PER_UNIT  
@@ -78,7 +75,7 @@ func set_variables(block_id, width: int, height: int, row: int, col: int):
 func get_input(): # arrow keys can move selected tile
 	var input_dir : Vector2 = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
 	velocity = input_dir * arrow_key_speed
-	want_to_move.emit(block_id, i_row, i_col, input_dir)
+	want_to_move.emit(block_id, grid_pos, input_dir)
 
 func _physics_process(_delta):
 	# velocity approach
@@ -136,23 +133,23 @@ func _process(_delta)-> void:
 		sprite.self_modulate = Color.WHITE if is_dragging else Color(255,255,255,0.5)
 
 func snap_to_position_from_row_col():
-	var new_position = Vector2(i_row + 0.5 * i_width, i_col + 0.5 * i_height) * PIXELS_PER_UNIT
+	var new_position = (grid_pos + 0.5 * dims) * PIXELS_PER_UNIT
 	if (position - new_position).length_squared() < 5000:
 		position = new_position
 		
 
 func set_row_col_from_pos():
 	# save row/ col position based on current position to allow snapping to new location
-	i_row = round((position.x / PIXELS_PER_UNIT) - 0.5 * i_width)
-	i_col = round((position.y / PIXELS_PER_UNIT) - 0.5 * i_height)
-	$DEBUG_array_idxs.text = str(i_row)+ ", " + str(i_col)
-	return Vector2i(i_row, i_col)
+	grid_pos.x = round((position.x / PIXELS_PER_UNIT) - 0.5 * dims.x)
+	grid_pos.y = round((position.y / PIXELS_PER_UNIT) - 0.5 * dims.y)
+	$DEBUG_array_idxs.text = str(grid_pos.x)+ ", " + str(grid_pos.y)
+	return Vector2(grid_pos)
 
 func _on_clickable_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if event.is_pressed():
-				just_selected.emit(block_id, i_row, i_col)
+				just_selected.emit(block_id, grid_pos)
 				start_drag()
 			else:
 				end_drag()

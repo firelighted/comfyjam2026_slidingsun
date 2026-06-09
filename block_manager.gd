@@ -138,14 +138,15 @@ func _create_block(block_id, row, col):
 	block.just_selected.connect(receive_block_just_selected)
 	return block
 
-func receive_block_want_to_move(block_id, row, col, dir):
+func receive_block_want_to_move(block_id, grid_pos, dir):
 	pass #print("block want to move")
 
-func receive_block_just_selected(block_id, row, col):
+func receive_block_just_selected(block_id, grid_pos):
 	for block in block_parent.get_children():
 		block.is_selected = (block.block_id == block_id)
 
 		if (block.block_id == block_id):
+			print(block.block_id)
 			if selected_block:
 				selected_block.is_dragging = false # finish old drag
 			selected_block = block
@@ -153,13 +154,12 @@ func receive_block_just_selected(block_id, row, col):
 		else:
 			block.snap_to_position_from_row_col()
 			
-		var prev_x = block.i_col
-		var prev_y = block.i_row
-		var row_col = block.set_row_col_from_pos()
+		var prev_pos = block.grid_pos
+		var new_pos = block.set_row_col_from_pos()
 		
 		# update array NOT WORKING -- wrong values being set
 		# set_array(block.i_row, block.i_col, block.block_id)  # doesn't change
-		set_array(prev_x, prev_y, row_col.x, row_col.y, block.block_id)
+		set_array(prev_pos, new_pos, block.block_id)
 	print_array()
 
 func init_array():
@@ -185,11 +185,11 @@ func get_array(x: int, y: int) -> int:
 	var idx = (y * x_size) + x
 	return array[idx]
 
-func set_array(prev_x: int, prev_y: int, x: int, y: int, val: int):
-	var idx = (y * x_size) + x
+func set_array(prev_pos: Vector2, new_pos: Vector2, val: int):
+	var idx = (new_pos.y * x_size) + new_pos.x
 	array[idx] = val
 	
-	var del_idx = (prev_y * x_size) + prev_x
+	var del_idx = (prev_pos.y * x_size) + prev_pos.x
 	array[del_idx] = -1
 
 func check_move_legality(block_id: int, direction: int) -> bool:
