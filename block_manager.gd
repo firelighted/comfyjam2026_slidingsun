@@ -14,9 +14,10 @@ var level_button_parent: Node
 const EMPTY = -1
 
 var array = [0,1,2,2,4,EMPTY,EMPTY,3,6,6,7]
-var x_size = 4
-var y_size = 5
-var cells  = x_size * y_size
+var level_state: Array[Node]
+var x_size: int
+var y_size: int
+var cells: int
 
 var is_dragging = false
 
@@ -36,12 +37,12 @@ func _ready() -> void:
 	# start level 0
 	load_level(0)
 	
-func load_level(new_level:int):
-	current_level = new_level
-	if current_level < len(levels):
-		array = levels[current_level].initial_array()
-		x_size = levels[current_level].x_size
-		y_size = levels[current_level].y_size
+func load_level(level_idx:int):
+	if level_idx < len(levels):
+		array = levels[level_idx].initial_array()
+		x_size = levels[level_idx].x_size
+		y_size = levels[level_idx].y_size
+		cells = x_size * y_size
 	else:
 		print("Using default level, no valid current_level in levels array")
 	init_array()
@@ -68,9 +69,6 @@ func get_levels_from_folder(folder_path: String):
 func receive_level_button_pressed(sibling_idx: int):
 	load_level(sibling_idx)
 
-func _process(_delta):
-	if selected_block:
-		selected_block.is_dragging = is_dragging
 
 func get_block_width(block_id):
 	var width = 0
@@ -101,17 +99,18 @@ func get_block_height(block_id):
 var drag_start = Vector2.ZERO
 var drag_end = Vector2.ZERO
 
-func _unhandled_input(event):
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT:
-			if event.is_pressed():
-				print("start drag")
-				drag_start = event.position
-				is_dragging = true
-			else:
-				print("stop drag")
-				drag_end = event.position
-				is_dragging = false
+#func _unhandled_input(event):
+	#if event is InputEventMouseButton:
+		#if event.button_index == MOUSE_BUTTON_LEFT:
+			#if event.is_pressed():
+				#print("start drag")
+				#drag_start = event.position
+				#is_dragging = true
+			#else:
+				#print("stop drag")
+				#drag_end = event.position
+				#selected_block.snap_to_position_from_row_col()
+				#is_dragging = false
 
 
 func spawn_blocks():
@@ -125,7 +124,6 @@ func spawn_blocks():
 		for x in range(x_size):
 			var block_id = array[(y * x_size) + x]
 			if block_id not in complete_blocks:
-				# print("(%d, %d) -> %d" % [x, y, block_id])
 				if block_id != EMPTY:
 					blocks.push_back(_create_block(block_id, x, y))
 					complete_blocks.push_back(block_id)
@@ -136,31 +134,39 @@ func _create_block(block_id, row, col):
 	block_parent.add_child(block)
 	block.want_to_move.connect(receive_block_want_to_move)
 	block.just_selected.connect(receive_block_just_selected)
+	block.just_deselected.connect(receive_block_just_deselected)
 	return block
 
+# TODO: should probably be linked to block's get_drag method?
 func receive_block_want_to_move(block_id, grid_pos, dir):
 	pass #print("block want to move")
 
 func receive_block_just_selected(block_id, grid_pos):
+	print('receive_block_just_selected')
 	for block in block_parent.get_children():
-		block.is_selected = (block.block_id == block_id)
-
 		if (block.block_id == block_id):
-			print(block.block_id)
-			if selected_block:
-				selected_block.is_dragging = false # finish old drag
 			selected_block = block
+			block.is_selected = true
 			selected_block.is_dragging = false
-		else:
-			block.snap_to_position_from_row_col()
 			
-		var prev_pos = block.grid_pos
-		var new_pos = block.set_row_col_from_pos()
+			#var prev_pos = block.grid_pos
+			#var new_pos = block.set_row_col_from_pos()
+			#
+			#print(prev_pos, new_pos)
+			#
+			## update array NOT WORKING -- wrong values being set
+			## set_array(block.i_row, block.i_col, block.block_id)  # doesn't change
+			#set_array(prev_pos, new_pos, block.dims, block.block_id)
+		#else:
+			#block.snap_to_position_from_row_col()
+			
 		
-		# update array NOT WORKING -- wrong values being set
-		# set_array(block.i_row, block.i_col, block.block_id)  # doesn't change
-		set_array(prev_pos, new_pos, block.block_id)
-	print_array()
+	print(array)
+
+func receive_block_just_deselected(
+	block: Block, prev_pos: Vector2, new_pos: Vector2
+):
+	update_array(prev_pos, new_pos, block.dims, block.block_id)
 
 func init_array():
 	if len(array) < cells - 1: # pad with empty
@@ -185,12 +191,30 @@ func get_array(x: int, y: int) -> int:
 	var idx = (y * x_size) + x
 	return array[idx]
 
-func set_array(prev_pos: Vector2, new_pos: Vector2, val: int):
-	var idx = (new_pos.y * x_size) + new_pos.x
-	array[idx] = val
+func update_array(
+	prev_pos: Vector2, new_pos: Vector2, block_dims: Vector2, val: int
+):
+	var dir = new_pos - prev_pos
 	
-	var del_idx = (prev_pos.y * x_size) + prev_pos.x
-	array[del_idx] = -1
+	# TODO: finish these for loops
+	if dir.x == 0:
+		# movement in y direction
+		for i in block_dims.x:
+			var idx = ((new_pos.y + block_dims.y - 1) * x_size) + new_pos.x
+			array[idx] = val
+		
+			var del_idx = (prev_pos.y * x_size) + prev_pos.x
+			array[del_idx] = -1
+		pass
+	elif dir.y == 0:
+		# movement in x direction
+		for i in block_dims.y:
+			var idx = (new_pos.y * x_size) + new_pos.x - (block_dims.x - 1)
+			array[idx] = val
+		
+			var del_idx = (prev_pos.y * x_size) + prev_pos.x
+			array[del_idx] = -1
+	
 
 func check_move_legality(block_id: int, direction: int) -> bool:
 	return true

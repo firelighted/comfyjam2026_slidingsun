@@ -3,6 +3,9 @@ class_name Block
 
 signal want_to_move(block_id: int, grid_pos: Vector2, dir: Vector2)
 signal just_selected(block_id: int, grid_pos: Vector2)
+signal just_deselected(
+	block: Block, prev_grid_pos: Vector2, new_grid_pos: Vector2
+)
 
 @onready var main_node = get_tree().get_root().get_node('Node').get_node('Main2D')
 
@@ -78,17 +81,15 @@ func get_input(): # arrow keys can move selected tile
 	want_to_move.emit(block_id, grid_pos, input_dir)
 
 func _physics_process(_delta):
-	# velocity approach
 	if is_selected:
 		if is_dragging: 
 			get_drag()
 		else: 
 			get_input()
-		set_row_col_from_pos()
-		move_and_slide()
 
 
 func start_drag():
+	print("start drag")
 	drag_start = get_global_mouse_position()
 	is_dragging = true
 	drag_start_pos = position
@@ -99,15 +100,23 @@ func start_drag():
 
 
 func end_drag():
+	var prev_pos = grid_pos
+	print("end drag")
 	is_dragging = false
 	is_selected = false
+	
+	set_row_col_from_pos()
 	snap_to_position_from_row_col()
+	
+	print(prev_pos, grid_pos)
+	just_deselected.emit(self, prev_pos, grid_pos)
 
 func get_drag():
 	if is_dragging:
 		var overall_offset = get_global_mouse_position() - drag_start
 		var legal_move = true
 		
+		# TODO: should probably move this up to block_manager
 		if abs( overall_offset.x) > abs( overall_offset.y):
 			overall_offset = Vector2(overall_offset.x, 0)
 
@@ -145,6 +154,10 @@ func set_row_col_from_pos():
 	$DEBUG_array_idxs.text = str(grid_pos.x)+ ", " + str(grid_pos.y)
 	return Vector2(grid_pos)
 
+###
+### INTERACTIVITY
+###
+
 func _on_clickable_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
@@ -153,4 +166,3 @@ func _on_clickable_input_event(_viewport: Node, event: InputEvent, _shape_idx: i
 				start_drag()
 			else:
 				end_drag()
-				set_row_col_from_pos()
