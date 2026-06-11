@@ -55,9 +55,8 @@ func receive_block_just_selected(block: Block, block_id, grid_pos):
 func receive_block_just_deselected(
 	block: Block, prev_pos: Vector2, new_pos: Vector2
 ):
-	if new_pos != prev_pos:
-		update_array(prev_pos, new_pos, block.dims, block.block_id)
-		print(array)
+	update_array(prev_pos, new_pos, block.dims, block.block_id)
+	print(array)
 
 
 ###
@@ -176,8 +175,10 @@ func get_array(x: int, y: int) -> int:
 
 func update_array(
 	prev_pos: Vector2, new_pos: Vector2, block_dims: Vector2, val: int
-):
-	var dir = new_pos - prev_pos
+) -> void:
+	if new_pos == prev_pos: return # no update to be made
+	
+	var dir = new_pos - prev_pos # dir != Vector2.ZERO always
 	var sign_x = signi(dir.x)
 	var sign_y = signi(dir.y)
 	
@@ -189,13 +190,14 @@ func update_array(
 				array[idx] = val
 		
 			# delete
-			var del_idx = 0
-			if sign_y > 0:
-				del_idx = (prev_pos.y * x_size) + prev_pos.x + i
-			elif sign_y < 0:
-				del_idx = ((prev_pos.y + block_dims.y - 1) * x_size) + prev_pos.x + i
+			for j in abs(dir.y):
+				var del_idx = 0
+				if sign_y > 0:
+					del_idx = ((prev_pos.y + j) * x_size) + prev_pos.x + i
+				elif sign_y < 0:
+					del_idx = ((prev_pos.y + block_dims.y - j - 1) * x_size) + prev_pos.x + i
 			
-			array[del_idx] = -1
+				array[del_idx] = -1
 	elif dir.y == 0:
 		# movement in x direction
 		for i in block_dims.y:
@@ -203,13 +205,14 @@ func update_array(
 				var idx = ((new_pos.y + i) * x_size) + new_pos.x + j
 				array[idx] = val
 			
-			var del_idx = 0
-			if sign_x > 0:
-				del_idx = (((prev_pos.y + i) * x_size) + prev_pos.x)
-			elif sign_x < 0:
-				del_idx = ((prev_pos.y + i) * x_size) + prev_pos.x + block_dims.x - 1
-			
-			array[del_idx] = -1
+			for j in abs(dir.x):
+				var del_idx = 0
+				if sign_x > 0:
+					del_idx = ((prev_pos.y + i) * x_size) + prev_pos.x + j
+				elif sign_x < 0:
+					del_idx = ((prev_pos.y + i) * x_size) + prev_pos.x + block_dims.x - j - 1
+				
+				array[del_idx] = -1
 	
 
 func check_move_legality(block_id: int, direction: int) -> bool:
