@@ -46,7 +46,7 @@ mouse_filter = 2
 texture = ExtResource("2_31q7j")
 
 [node name="midground" type="TextureRect" parent="UI"]
-self_modulate = Color(0.68, 0.47294, 0.2516, 1)
+self_modulate = Color(1, 0.929412, 0.843137, 1)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -91,7 +91,7 @@ position = Vector2(64, 66)
 script = ExtResource("1_5ua2j")
 
 [node name="valid_tile_area_bkgd" type="Sprite2D" parent="Main2D"]
-self_modulate = Color(0.302872, 0.175993, 2.40654e-08, 0.572549)
+self_modulate = Color(0.826925, 0.93, 0.6045, 0.168627)
 position = Vector2(0, 1.43051e-06)
 scale = Vector2(4, 4)
 texture = ExtResource("2_bb1j8")
@@ -100,7 +100,7 @@ offset = Vector2(65, 65.0249)
 [node name="BlockParent" type="Node2D" parent="Main2D"]
 
 [node name="Block" parent="Main2D/BlockParent" instance=ExtResource("6_6y1a6")]
-position = Vector2(-160, -162)
+position = Vector2(-152, -146)
 
 [node name="palette" type="Sprite2D" parent="Main2D"]
 position = Vector2(323, -107)
