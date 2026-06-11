@@ -1,31 +1,33 @@
 extends Node2D
 
-@export var block_parent_path : NodePath = "BlockParent"
 @export var level_button_parent_path : NodePath = "../UI/LevelButtonParent"
 @export var levels_folder_path : String = "res://levels/"
 @export var blocks : Array[Node]
 @export var levels : Array[LevelResource]
 var current_level = 0
 var block_prefab: PackedScene = preload("res://scenes_scripts/block.tscn")
-var block_parent : Node
+@onready var block_parent = $BlockParent
 var selected_block: Node
 var level_button_parent: Node
 
 const EMPTY = -1
 
 var array = [0,1,2,2,4,EMPTY,EMPTY,3,6,6,7]
-var level_state: Array[Node]
 var x_size: int
 var y_size: int
 var cells: int
 
 var is_dragging = false
 
+
+###
+### NODE METHODS
+###
+
 func _ready() -> void:
 	if not levels:
 		levels = get_levels_from_folder(levels_folder_path)
 	
-	block_parent = get_node(block_parent_path)
 	level_button_parent = get_node(level_button_parent_path)
 	# make buttons for choosing level
 	var level_button_prefab = preload("res://scenes_scripts/level_button.tscn")
@@ -36,7 +38,32 @@ func _ready() -> void:
 		level_button_parent.add_child(button)
 	# start level 0
 	load_level(0)
-	
+
+
+###
+### RECEIVERS 
+###
+
+# TODO: should probably be linked to block's get_drag method?
+func receive_block_want_to_move(block_id, grid_pos, dir):
+	pass #print("block want to move")
+
+func receive_block_just_selected(block: Block, block_id, grid_pos):
+	print('receive_block_just_selected')
+	selected_block = block
+
+func receive_block_just_deselected(
+	block: Block, prev_pos: Vector2, new_pos: Vector2
+):
+	if new_pos != prev_pos:
+		update_array(prev_pos, new_pos, block.dims, block.block_id)
+		print(array)
+
+
+###
+### CUSTOM METHODS
+###
+
 func load_level(level_idx:int):
 	if level_idx < len(levels):
 		array = levels[level_idx].initial_array()
@@ -123,20 +150,6 @@ func _create_block(block_id, row, col):
 	block.just_selected.connect(receive_block_just_selected)
 	block.just_deselected.connect(receive_block_just_deselected)
 	return block
-
-# TODO: should probably be linked to block's get_drag method?
-func receive_block_want_to_move(block_id, grid_pos, dir):
-	pass #print("block want to move")
-
-func receive_block_just_selected(block: Block, block_id, grid_pos):
-	print('receive_block_just_selected')
-	selected_block = block
-
-func receive_block_just_deselected(
-	block: Block, prev_pos: Vector2, new_pos: Vector2
-):
-	update_array(prev_pos, new_pos, block.dims, block.block_id)
-	print(array)
 
 func init_array():
 	if len(array) < cells - 1: # pad with empty

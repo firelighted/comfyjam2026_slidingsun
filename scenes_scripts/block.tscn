@@ -16,7 +16,6 @@ font_size = 90
 light_mask = 0
 input_pickable = true
 script = ExtResource("1_o3usp")
-sprite_path = NodePath("Clickable/selected_texture")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_nichk")
