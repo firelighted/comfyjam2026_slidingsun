@@ -2,7 +2,7 @@ extends CharacterBody2D
 class_name Block
 
 signal want_to_move(block_id: int, grid_pos: Vector2, dir: Vector2)
-signal just_selected(block_id: int, grid_pos: Vector2)
+signal just_selected(block: Block, block_id: int, grid_pos: Vector2)
 signal just_deselected(
 	block: Block, prev_grid_pos: Vector2, new_grid_pos: Vector2
 )
@@ -92,11 +92,13 @@ func start_drag():
 	print("start drag")
 	drag_start = get_global_mouse_position()
 	is_dragging = true
+	is_selected = true
 	drag_start_pos = position
 	$"../../../DEBUG_mouseclick".global_position = drag_start
 	$"../../../DEBUG_dragoffset".clear_points()
 	$"../../../DEBUG_dragoffset".add_point(get_global_mouse_position())
 	$"../../../DEBUG_dragoffset".add_point(global_position)
+	just_selected.emit(self, block_id, grid_pos)
 
 
 func end_drag():
@@ -162,7 +164,6 @@ func _on_clickable_input_event(_viewport: Node, event: InputEvent, _shape_idx: i
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if event.is_pressed():
-				just_selected.emit(block_id, grid_pos)
 				start_drag()
 			else:
 				end_drag()

@@ -99,20 +99,6 @@ func get_block_height(block_id):
 var drag_start = Vector2.ZERO
 var drag_end = Vector2.ZERO
 
-#func _unhandled_input(event):
-	#if event is InputEventMouseButton:
-		#if event.button_index == MOUSE_BUTTON_LEFT:
-			#if event.is_pressed():
-				#print("start drag")
-				#drag_start = event.position
-				#is_dragging = true
-			#else:
-				#print("stop drag")
-				#drag_end = event.position
-				#selected_block.snap_to_position_from_row_col()
-				#is_dragging = false
-
-
 func spawn_blocks():
 	for block in block_parent.get_children():
 		block.queue_free()
@@ -132,6 +118,7 @@ func _create_block(block_id, row, col):
 	var block = block_prefab.instantiate()
 	block.set_variables(block_id, get_block_width(block_id), get_block_height(block_id), row, col)
 	block_parent.add_child(block)
+	
 	block.want_to_move.connect(receive_block_want_to_move)
 	block.just_selected.connect(receive_block_just_selected)
 	block.just_deselected.connect(receive_block_just_deselected)
@@ -141,32 +128,15 @@ func _create_block(block_id, row, col):
 func receive_block_want_to_move(block_id, grid_pos, dir):
 	pass #print("block want to move")
 
-func receive_block_just_selected(block_id, grid_pos):
+func receive_block_just_selected(block: Block, block_id, grid_pos):
 	print('receive_block_just_selected')
-	for block in block_parent.get_children():
-		if (block.block_id == block_id):
-			selected_block = block
-			block.is_selected = true
-			selected_block.is_dragging = false
-			
-			#var prev_pos = block.grid_pos
-			#var new_pos = block.set_row_col_from_pos()
-			#
-			#print(prev_pos, new_pos)
-			#
-			## update array NOT WORKING -- wrong values being set
-			## set_array(block.i_row, block.i_col, block.block_id)  # doesn't change
-			#set_array(prev_pos, new_pos, block.dims, block.block_id)
-		#else:
-			#block.snap_to_position_from_row_col()
-			
-		
-	print(array)
+	selected_block = block
 
 func receive_block_just_deselected(
 	block: Block, prev_pos: Vector2, new_pos: Vector2
 ):
 	update_array(prev_pos, new_pos, block.dims, block.block_id)
+	print(array)
 
 func init_array():
 	if len(array) < cells - 1: # pad with empty
@@ -195,24 +165,37 @@ func update_array(
 	prev_pos: Vector2, new_pos: Vector2, block_dims: Vector2, val: int
 ):
 	var dir = new_pos - prev_pos
+	var sign_x = signi(dir.x)
+	var sign_y = signi(dir.y)
 	
-	# TODO: finish these for loops
 	if dir.x == 0:
 		# movement in y direction
 		for i in block_dims.x:
-			var idx = ((new_pos.y + block_dims.y - 1) * x_size) + new_pos.x
-			array[idx] = val
+			for j in block_dims.y:
+				var idx = ((new_pos.y + j) * x_size) + new_pos.x + i
+				array[idx] = val
 		
-			var del_idx = (prev_pos.y * x_size) + prev_pos.x
+			# delete
+			var del_idx = 0
+			if sign_y > 0:
+				del_idx = (prev_pos.y * x_size) + prev_pos.x + i
+			elif sign_y < 0:
+				del_idx = ((prev_pos.y + block_dims.y - 1) * x_size) + prev_pos.x + i
+			
 			array[del_idx] = -1
-		pass
 	elif dir.y == 0:
 		# movement in x direction
 		for i in block_dims.y:
-			var idx = (new_pos.y * x_size) + new_pos.x - (block_dims.x - 1)
-			array[idx] = val
-		
-			var del_idx = (prev_pos.y * x_size) + prev_pos.x
+			for j in block_dims.x:
+				var idx = ((new_pos.y + i) * x_size) + new_pos.x + j
+				array[idx] = val
+			
+			var del_idx = 0
+			if sign_x > 0:
+				del_idx = (((prev_pos.y + i) * x_size) + prev_pos.x)
+			elif sign_x < 0:
+				del_idx = ((prev_pos.y + i) * x_size) + prev_pos.x + block_dims.x - 1
+			
 			array[del_idx] = -1
 	
 
