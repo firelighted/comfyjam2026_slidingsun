@@ -49,7 +49,7 @@ mouse_filter = 2
 texture = ExtResource("2_31q7j")
 
 [node name="midground" type="TextureRect" parent="UI"]
-self_modulate = Color(1, 0.929412, 0.843137, 1)
+self_modulate = Color(0.984314, 0.776471, 0.592157, 1)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

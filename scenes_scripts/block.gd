@@ -50,8 +50,8 @@ func _physics_process(_delta):
 ### CUSTOM METHODS
 ###
 
-func set_variables(block_id, width: int, height: int, row: int, col: int):
-	self.block_id = block_id
+func set_variables(new_block_id, width: int, height: int, row: int, col: int):
+	self.block_id = new_block_id
 	self.dims.x = width
 	self.dims.y = height
 	self.grid_pos.x = row

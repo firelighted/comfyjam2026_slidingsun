@@ -9,8 +9,16 @@ var is_open = true
 
 func _ready():
 	anim_player = get_node(anim_player_path)
-	change_state(false)
+	randomize()
+	if  randf() < 0.5: 
+		scale = Vector2(-1, 1)
 	
+	if is_open and randf() < 0.5: 
+		anim_player.play("open_idle")
+	else:
+		is_open = false
+		anim_player.play("close_idle")
+
 	
 func change_state(new_state_is_open):
 	if is_open != new_state_is_open:

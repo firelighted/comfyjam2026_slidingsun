@@ -35,7 +35,7 @@ shader_parameter/width = 0.34
 shader_parameter/radius = 0.27
 shader_parameter/speed = 0.02
 shader_parameter/edge_source = 0.0
-shader_parameter/edge_color = Color(0.800491, 0.800491, 0.800491, 1)
+shader_parameter/edge_color = Color(0.794272, 0.843837, 0.857672, 1)
 shader_parameter/inner_color = Color(1, 1, 1, 1)
 shader_parameter/noise = SubResource("NoiseTexture2D_w5jev")
 
