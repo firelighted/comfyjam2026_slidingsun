@@ -1,16 +1,47 @@
-[gd_scene load_steps=8 format=3 uid="uid://c1nqrhcqdwaqy"]
+[gd_scene load_steps=13 format=3 uid="uid://c1nqrhcqdwaqy"]
 
 [ext_resource type="Script" path="res://scenes_scripts/block.gd" id="1_o3usp"]
-[ext_resource type="Texture2D" uid="uid://b8frk5eo3s0gi" path="res://images/tiles/base_tile_white.png" id="2_80yha"]
-[ext_resource type="Texture2D" uid="uid://dqvjyshmb4s2v" path="res://images/tiles/selected_tile.png" id="3_lgxio"]
-[ext_resource type="Texture2D" uid="uid://tmeqmnimt82m" path="res://images/palette.png" id="4_kqftf"]
+[ext_resource type="Shader" path="res://shaders/cloud_tile.gdshader" id="1_ygfc3"]
+[ext_resource type="Texture2D" uid="uid://qlwb5s0awuw0" path="res://images/tiles/base_tile_white.png" id="2_80yha"]
+[ext_resource type="Texture2D" uid="uid://dir1qm5nt4uoj" path="res://images/tiles/selected_tile.png" id="3_lgxio"]
+[ext_resource type="Texture2D" uid="uid://cg14q0lo7puh1" path="res://images/palette.png" id="4_kqftf"]
 [ext_resource type="LabelSettings" uid="uid://b4qx5deogc1w8" path="res://theme/DEBUG_labelsetting.tres" id="5_280uh"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nichk"]
 size = Vector2(125, 125)
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_gsa67"]
+frequency = 0.0073
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_w5jev"]
+seamless = true
+noise = SubResource("FastNoiseLite_gsa67")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5m840"]
+shader = ExtResource("1_ygfc3")
+shader_parameter/height = 0.35
+shader_parameter/width = 0.34
+shader_parameter/radius = 0.27
+shader_parameter/speed = 0.02
+shader_parameter/edge_source = 0.0
+shader_parameter/edge_color = Color(0, 0, 0, 0.0980392)
+shader_parameter/inner_color = Color(0, 0, 0, 0.411765)
+shader_parameter/noise = SubResource("NoiseTexture2D_w5jev")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_aba2b"]
+shader = ExtResource("1_ygfc3")
+shader_parameter/height = 0.35
+shader_parameter/width = 0.34
+shader_parameter/radius = 0.27
+shader_parameter/speed = 0.02
+shader_parameter/edge_source = 0.0
+shader_parameter/edge_color = Color(0.800491, 0.800491, 0.800491, 1)
+shader_parameter/inner_color = Color(1, 1, 1, 1)
+shader_parameter/noise = SubResource("NoiseTexture2D_w5jev")
+
 [sub_resource type="LabelSettings" id="LabelSettings_g8qok"]
 font_size = 90
+font_color = Color(0.450648, 0.450648, 0.450648, 1)
 
 [node name="Block" type="CharacterBody2D"]
 light_mask = 0
@@ -27,15 +58,25 @@ collision_mask = 0
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="Clickable"]
 shape = SubResource("RectangleShape2D_nichk")
 
+[node name="shadow" type="Sprite2D" parent="Clickable"]
+material = SubResource("ShaderMaterial_5m840")
+position = Vector2(-20, 24)
+texture = ExtResource("2_80yha")
+region_rect = Rect2(45, 45, 405, 405)
+
 [node name="base_texture" type="Sprite2D" parent="Clickable"]
+z_index = 100
+material = SubResource("ShaderMaterial_aba2b")
 texture = ExtResource("2_80yha")
 region_rect = Rect2(45, 45, 405, 405)
 
 [node name="selected_texture" type="Sprite2D" parent="Clickable"]
+z_index = 100
 scale = Vector2(0.9, 0.9)
 texture = ExtResource("3_lgxio")
 
 [node name="special_texture" type="Sprite2D" parent="."]
+z_index = 100
 region_rect = Rect2(45, 45, 405, 405)
 
 [node name="palette" type="Sprite2D" parent="."]
@@ -44,6 +85,7 @@ position = Vector2(-3, 81)
 texture = ExtResource("4_kqftf")
 
 [node name="Label" type="Label" parent="."]
+z_index = 100
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -61,6 +103,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="DEBUG_array_idxs" type="Label" parent="."]
+z_index = 100
 offset_left = -20.0
 offset_top = 38.0
 offset_right = 20.0
