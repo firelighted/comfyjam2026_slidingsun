@@ -2,11 +2,11 @@
 
 [ext_resource type="Script" path="res://block_manager.gd" id="1_5ua2j"]
 [ext_resource type="Theme" uid="uid://dqbku2qxufg7j" path="res://theme/main_theme.tres" id="1_stk34"]
-[ext_resource type="Texture2D" uid="uid://tmeqmnimt82m" path="res://images/palette.png" id="2_31q7j"]
-[ext_resource type="Texture2D" uid="uid://c0erbyrf7daro" path="res://images/tiles/square.png" id="2_bb1j8"]
+[ext_resource type="Texture2D" uid="uid://cg14q0lo7puh1" path="res://images/palette.png" id="2_31q7j"]
+[ext_resource type="Texture2D" uid="uid://l6c5b8gwc4ih" path="res://images/tiles/square.png" id="2_bb1j8"]
 [ext_resource type="LabelSettings" uid="uid://b4qx5deogc1w8" path="res://theme/DEBUG_labelsetting.tres" id="3_ytdtc"]
 [ext_resource type="PackedScene" uid="uid://c1nqrhcqdwaqy" path="res://scenes_scripts/block.tscn" id="6_6y1a6"]
-[ext_resource type="Texture2D" uid="uid://cpn4chu647sc0" path="res://icon.svg" id="7_8hjc0"]
+[ext_resource type="Texture2D" uid="uid://cihbuf5w5dxhy" path="res://icon.svg" id="7_8hjc0"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ivpb4"]
 font_size = 27
@@ -35,6 +35,7 @@ mouse_filter = 2
 theme = ExtResource("1_stk34")
 
 [node name="background" type="TextureRect" parent="UI"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -45,7 +46,7 @@ mouse_filter = 2
 texture = ExtResource("2_31q7j")
 
 [node name="midground" type="TextureRect" parent="UI"]
-self_modulate = Color(1, 1, 1, 0.584314)
+self_modulate = Color(0.68, 0.47294, 0.2516, 1)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -90,7 +91,7 @@ position = Vector2(64, 66)
 script = ExtResource("1_5ua2j")
 
 [node name="valid_tile_area_bkgd" type="Sprite2D" parent="Main2D"]
-self_modulate = Color(1, 1, 1, 0.572549)
+self_modulate = Color(0.302872, 0.175993, 2.40654e-08, 0.572549)
 position = Vector2(0, 1.43051e-06)
 scale = Vector2(4, 4)
 texture = ExtResource("2_bb1j8")
