@@ -107,7 +107,7 @@ position = Vector2(-32, 422)
 position = Vector2(552, 478)
 
 [node name="Umbrella3" parent="Main2D" instance=ExtResource("6_a0v82")]
-position = Vector2(48, 478)
+position = Vector2(40, 408)
 
 [node name="BlockParent" type="Node2D" parent="Main2D"]
 
