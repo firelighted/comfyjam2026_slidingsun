@@ -99,9 +99,6 @@ offset = Vector2(65, 65.0249)
 
 [node name="BlockParent" type="Node2D" parent="Main2D"]
 
-[node name="Block" parent="Main2D/BlockParent" instance=ExtResource("6_6y1a6")]
-position = Vector2(-152, -146)
-
 [node name="palette" type="Sprite2D" parent="Main2D"]
 position = Vector2(323, -107)
 texture = ExtResource("2_31q7j")
@@ -142,3 +139,6 @@ points = PackedVector2Array(-10, -10, -50, 400)
 width = 30.0
 width_curve = SubResource("Curve_ihapv")
 default_color = Color(1, 0, 0, 1)
+
+[node name="Block" parent="." instance=ExtResource("6_6y1a6")]
+position = Vector2(-72, -96)
