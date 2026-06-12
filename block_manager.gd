@@ -50,6 +50,15 @@ func receive_block_want_to_move(block_id, grid_pos, dir):
 
 func receive_block_just_selected(block: Block, block_id, grid_pos):
 	print('receive_block_just_selected')
+	
+	if is_instance_valid(selected_block):
+		# if a block is already selected, do nothing
+		if block.block_id == selected_block.block_id:
+			return
+		
+		# if another block was selected previously, deselect it
+		selected_block.end_drag()
+		
 	selected_block = block
 
 func receive_block_just_deselected(
@@ -236,18 +245,16 @@ func max_legal_distance(block: Block, axis: String, direction: int) -> int:
 					if x_to_right == x_size:
 						max_distance = j
 						break_out = true
-					else:
-						if array[(pos.y + i)*x_size + x_to_right] != EMPTY:
-							max_distance = j
-							break_out = true
+					elif array[(pos.y + i)*x_size + x_to_right] != EMPTY:
+						max_distance = j
+						break_out = true
 				elif direction < 0:
 					if pos.x - j == 0:
 						max_distance = j
 						break_out = true
-					else:
-						if array[(pos.y + i)*x_size + pos.x - j - 1] != EMPTY:
-							max_distance = j
-							break_out = true
+					elif array[(pos.y + i)*x_size + pos.x - j - 1] != EMPTY:
+						max_distance = j
+						break_out = true
 	elif axis == 'y':
 		for j in range(y_size):
 			if break_out: break
@@ -260,17 +267,15 @@ func max_legal_distance(block: Block, axis: String, direction: int) -> int:
 					if y_above == y_size:
 						max_distance = j
 						break_out = true
-					else:
-						if array[y_above*x_size + pos.x + i] != EMPTY:
-							max_distance = j
-							break_out = true
+					elif array[y_above*x_size + pos.x + i] != EMPTY:
+						max_distance = j
+						break_out = true
 				elif direction < 0:
 					if pos.y - j == 0:
 						max_distance = j
 						break_out = true
-					else:
-						if array[(pos.y - j - 1)*x_size + pos.x + i] != EMPTY:
-							max_distance = j
-							break_out = true
+					elif array[(pos.y - j - 1)*x_size + pos.x + i] != EMPTY:
+						max_distance = j
+						break_out = true
 	
 	return max_distance
