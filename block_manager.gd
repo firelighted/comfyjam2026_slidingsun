@@ -187,7 +187,7 @@ func update_array(
 ) -> void:
 	if new_pos == prev_pos: return # no update to be made
 	
-	var dir = new_pos - prev_pos # dir != Vector2.ZERO always
+	var dir = new_pos - prev_pos # dir != Vector2.ZERO
 	var sign_x = signi(dir.x)
 	var sign_y = signi(dir.y)
 	
@@ -224,6 +224,7 @@ func update_array(
 				array[del_idx] = -1
 	
 
+# TODO: should probably refactor to use get_array()
 ### direction: either -1, 0, or 1
 func max_legal_distance(block: Block, axis: String, direction: int) -> int:
 	var max_distance = 0

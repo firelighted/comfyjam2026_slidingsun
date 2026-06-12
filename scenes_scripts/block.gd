@@ -108,9 +108,9 @@ func get_drag():
 			
 			var offset_x = 0
 			if direction > 0:
-				offset_x = min(overall_offset.x, max_distance*PIXELS_PER_UNIT)
+				offset_x = min(overall_offset.x, max_distance*Constants.PIXELS_PER_UNIT)
 			elif direction < 0:
-				offset_x = max(overall_offset.x, -max_distance*PIXELS_PER_UNIT)
+				offset_x = max(overall_offset.x, -max_distance*Constants.PIXELS_PER_UNIT)
 			
 			overall_offset = Vector2(offset_x, 0)
 		else:
@@ -120,9 +120,9 @@ func get_drag():
 			
 			var offset_y = 0
 			if direction > 0:
-				offset_y = min(overall_offset.y, max_distance*PIXELS_PER_UNIT)
+				offset_y = min(overall_offset.y, max_distance*Constants.PIXELS_PER_UNIT)
 			elif direction < 0:
-				offset_y = max(overall_offset.y, -max_distance*PIXELS_PER_UNIT)
+				offset_y = max(overall_offset.y, -max_distance*Constants.PIXELS_PER_UNIT)
 			
 			overall_offset = Vector2(0, offset_y)
 		
