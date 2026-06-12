@@ -98,23 +98,33 @@ func get_drag():
 	if is_dragging:
 		var overall_offset = get_global_mouse_position() - drag_start
 		var legal_move = true
+		var max_distance = 0
 		
 		# TODO: should probably move this up to block_manager
 		if abs( overall_offset.x) > abs( overall_offset.y):
-			overall_offset = Vector2(overall_offset.x, 0)
-
 			var direction = signi(overall_offset.x) # -1, 0, or 1
 
-			legal_move = main_node.check_move_legality(self, 'x', direction)
-		else:
-			overall_offset = Vector2(0, overall_offset.y)
+			max_distance = main_node.max_legal_distance(self, 'x', direction)
 			
+			var offset_x = 0
+			if direction > 0:
+				offset_x = min(overall_offset.x, max_distance*PIXELS_PER_UNIT)
+			elif direction < 0:
+				offset_x = max(overall_offset.x, -max_distance*PIXELS_PER_UNIT)
+			
+			overall_offset = Vector2(offset_x, 0)
+		else:
 			var direction = signi(overall_offset.y) # -1, 0, or 1
-
-			legal_move = main_node.check_move_legality(self, 'y', direction)
-		
-		if !legal_move:
-			overall_offset = Vector2.ZERO
+			
+			max_distance = main_node.max_legal_distance(self, 'y', direction)
+			
+			var offset_y = 0
+			if direction > 0:
+				offset_y = min(overall_offset.y, max_distance*PIXELS_PER_UNIT)
+			elif direction < 0:
+				offset_y = max(overall_offset.y, -max_distance*PIXELS_PER_UNIT)
+			
+			overall_offset = Vector2(0, offset_y)
 		
 		position = drag_start_pos + overall_offset
 

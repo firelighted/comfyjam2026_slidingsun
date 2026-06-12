@@ -216,42 +216,61 @@ func update_array(
 	
 
 ### direction: either -1, 0, or 1
-func check_move_legality(block: Block, axis: String, direction: int) -> bool:
-	var result = true
-	if direction == 0: return result
+func max_legal_distance(block: Block, axis: String, direction: int) -> int:
+	var max_distance = 0
+	if direction == 0: return max_distance
 	
 	var pos = block.grid_pos
 	var dims = block.dims
+	var break_out = false
 	
 	if axis == 'x':
-		for i in range(dims.y):
-			if direction > 0:
-				var x_to_right = pos.x + dims.x
-				if x_to_right == x_size:
-					result = false
-				else:
-					if array[(pos.y + i)*x_size + x_to_right] != EMPTY:
-						result = false
-			elif direction < 0:
-				if pos.x == 0:
-					result = false
-				else:
-					if array[(pos.y + i)*x_size + pos.x - 1] != EMPTY:
-						result = false
+		for j in range(x_size):
+			if break_out: break
+			
+			for i in range(dims.y):
+				if break_out: break
+				
+				if direction > 0:
+					var x_to_right = pos.x + dims.x + j
+					if x_to_right == x_size:
+						max_distance = j
+						break_out = true
+					else:
+						if array[(pos.y + i)*x_size + x_to_right] != EMPTY:
+							max_distance = j
+							break_out = true
+				elif direction < 0:
+					if pos.x - j == 0:
+						max_distance = j
+						break_out = true
+					else:
+						if array[(pos.y + i)*x_size + pos.x - j - 1] != EMPTY:
+							max_distance = j
+							break_out = true
 	elif axis == 'y':
-		for i in range(dims.x):
-			if direction > 0:
-				var y_above = pos.y + dims.y
-				if y_above == y_size:
-					result = false
-				else:
-					if array[y_above*x_size + pos.x + i] != EMPTY:
-						result = false
-			elif direction < 0:
-				if pos.y == 0:
-					result = false
-				else:
-					if array[(pos.y - 1)*x_size + pos.x + i] != EMPTY:
-						result = false
+		for j in range(y_size):
+			if break_out: break
+			
+			for i in range(dims.x):
+				if break_out: break
+				
+				if direction > 0:
+					var y_above = pos.y + dims.y + j
+					if y_above == y_size:
+						max_distance = j
+						break_out = true
+					else:
+						if array[y_above*x_size + pos.x + i] != EMPTY:
+							max_distance = j
+							break_out = true
+				elif direction < 0:
+					if pos.y - j == 0:
+						max_distance = j
+						break_out = true
+					else:
+						if array[(pos.y - j - 1)*x_size + pos.x + i] != EMPTY:
+							max_distance = j
+							break_out = true
 	
-	return result
+	return max_distance
