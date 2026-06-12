@@ -103,15 +103,15 @@ func get_drag():
 		if abs( overall_offset.x) > abs( overall_offset.y):
 			overall_offset = Vector2(overall_offset.x, 0)
 
-			var direction = 1 if overall_offset.x > 0 else -1
+			var direction = signi(overall_offset.x) # -1, 0, or 1
 
-			legal_move = main_node.check_move_legality(block_id, direction)
+			legal_move = main_node.check_move_legality(self, 'x', direction)
 		else:
 			overall_offset = Vector2(0, overall_offset.y)
 			
-			var direction = 1 if overall_offset.y > 0 else -1
+			var direction = signi(overall_offset.y) # -1, 0, or 1
 
-			legal_move = main_node.check_move_legality(block_id, direction)
+			legal_move = main_node.check_move_legality(self, 'y', direction)
 		
 		if !legal_move:
 			overall_offset = Vector2.ZERO

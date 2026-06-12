@@ -215,5 +215,43 @@ func update_array(
 				array[del_idx] = -1
 	
 
-func check_move_legality(block_id: int, direction: int) -> bool:
-	return true
+### direction: either -1, 0, or 1
+func check_move_legality(block: Block, axis: String, direction: int) -> bool:
+	var result = true
+	if direction == 0: return result
+	
+	var pos = block.grid_pos
+	var dims = block.dims
+	
+	if axis == 'x':
+		for i in range(dims.y):
+			if direction > 0:
+				var x_to_right = pos.x + dims.x
+				if x_to_right == x_size:
+					result = false
+				else:
+					if array[(pos.y + i)*x_size + x_to_right] != EMPTY:
+						result = false
+			elif direction < 0:
+				if pos.x == 0:
+					result = false
+				else:
+					if array[(pos.y + i)*x_size + pos.x - 1] != EMPTY:
+						result = false
+	elif axis == 'y':
+		for i in range(dims.x):
+			if direction > 0:
+				var y_above = pos.y + dims.y
+				if y_above == y_size:
+					result = false
+				else:
+					if array[y_above*x_size + pos.x + i] != EMPTY:
+						result = false
+			elif direction < 0:
+				if pos.y == 0:
+					result = false
+				else:
+					if array[(pos.y - 1)*x_size + pos.x + i] != EMPTY:
+						result = false
+	
+	return result
