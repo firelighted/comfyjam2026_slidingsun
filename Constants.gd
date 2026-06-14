@@ -1,5 +1,8 @@
 extends Node
 
+const EMPTY = -1
+const SPECIAL = 0
+
 const PIXELS_PER_UNIT = 130
 
 const THEME_COLORS = [

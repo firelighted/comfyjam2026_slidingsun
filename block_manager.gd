@@ -10,9 +10,7 @@ var block_prefab: PackedScene = preload("res://scenes_scripts/block.tscn")
 var selected_block: Node
 var level_button_parent: Node
 
-const EMPTY = -1
-
-var array = [0,1,2,2,4,EMPTY,EMPTY,3,6,6,7]
+var array = [0,1,2,2,4,Constants.EMPTY,Constants.EMPTY,3,6,6,7]
 var x_size: int
 var y_size: int
 var cells: int
@@ -39,6 +37,10 @@ func _ready() -> void:
 	# start level 0
 	load_level(0)
 
+func _notification(what):
+	if what == NOTIFICATION_WM_MOUSE_EXIT:
+		if is_instance_valid(selected_block):
+			selected_block.end_drag()
 
 ###
 ### RECEIVERS 
@@ -145,7 +147,7 @@ func spawn_blocks():
 		for x in range(x_size):
 			var block_id = array[(y * x_size) + x]
 			if block_id not in complete_blocks:
-				if block_id != EMPTY:
+				if block_id != Constants.EMPTY:
 					blocks.push_back(_create_block(block_id, x, y))
 					complete_blocks.push_back(block_id)
 
@@ -162,7 +164,7 @@ func _create_block(block_id, row, col):
 func init_array():
 	if len(array) < cells - 1: # pad with empty
 		for i in range(len(array), cells):
-			array.append(EMPTY)
+			array.append(Constants.EMPTY)
 	elif len(array) > cells:
 		push_warning("array longer than x_size * y_size")
 
@@ -246,14 +248,14 @@ func max_legal_distance(block: Block, axis: String, direction: int) -> int:
 					if x_to_right == x_size:
 						max_distance = j
 						break_out = true
-					elif array[(pos.y + i)*x_size + x_to_right] != EMPTY:
+					elif array[(pos.y + i)*x_size + x_to_right] != Constants.EMPTY:
 						max_distance = j
 						break_out = true
 				elif direction < 0:
 					if pos.x - j == 0:
 						max_distance = j
 						break_out = true
-					elif array[(pos.y + i)*x_size + pos.x - j - 1] != EMPTY:
+					elif array[(pos.y + i)*x_size + pos.x - j - 1] != Constants.EMPTY:
 						max_distance = j
 						break_out = true
 	elif axis == 'y':
@@ -268,14 +270,14 @@ func max_legal_distance(block: Block, axis: String, direction: int) -> int:
 					if y_above == y_size:
 						max_distance = j
 						break_out = true
-					elif array[y_above*x_size + pos.x + i] != EMPTY:
+					elif array[y_above*x_size + pos.x + i] != Constants.EMPTY:
 						max_distance = j
 						break_out = true
 				elif direction < 0:
 					if pos.y - j == 0:
 						max_distance = j
 						break_out = true
-					elif array[(pos.y - j - 1)*x_size + pos.x + i] != EMPTY:
+					elif array[(pos.y - j - 1)*x_size + pos.x + i] != Constants.EMPTY:
 						max_distance = j
 						break_out = true
 	

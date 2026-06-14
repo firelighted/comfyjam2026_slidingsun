@@ -1,9 +1,6 @@
 extends Resource
 class_name LevelResource
 
-const EMPTY = -1
-const SPECIAL = 0
-
 @export var easy_edit_array : Array[String] = ["0,1,2,3", "5,5,4,4", "-1,-1,9,10", "-1,-1,9,10"]
 @export var x_size = 4
 @export var y_size = 4
@@ -12,7 +9,7 @@ const SPECIAL = 0
 func initial_array():
 	var output = [] #[] * 
 	for i in range(x_size * y_size):
-		output.append(EMPTY)
+		output.append(Constants.EMPTY)
 	var x = 0
 	var y = 0
 	for row in easy_edit_array:
