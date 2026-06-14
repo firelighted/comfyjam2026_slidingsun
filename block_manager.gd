@@ -204,9 +204,7 @@ func get_block_height(block_id):
 			return height
 	
 	return height
-	
-var drag_start = Vector2.ZERO
-var drag_end = Vector2.ZERO
+
 
 func spawn_blocks():
 	for block in block_parent.get_children():
@@ -311,7 +309,6 @@ func update_array(
 				array[del_idx] = -1
 	
 
-# TODO: should probably refactor to use get_array()
 ### direction: either -1, 0, or 1
 func max_legal_distance(block: Block, axis: String, direction: int) -> int:
 	var max_distance = 0
@@ -330,17 +327,18 @@ func max_legal_distance(block: Block, axis: String, direction: int) -> int:
 				
 				if direction > 0:
 					var x_to_right = pos.x + dims.x + j
+					
 					if x_to_right == x_size:
 						max_distance = j
 						break_out = true
-					elif array[(pos.y + i)*x_size + x_to_right] != Constants.EMPTY:
+					elif get_array(x_to_right, pos.y + i) != Constants.EMPTY:
 						max_distance = j
 						break_out = true
 				elif direction < 0:
 					if pos.x - j == 0:
 						max_distance = j
 						break_out = true
-					elif array[(pos.y + i)*x_size + pos.x - j - 1] != Constants.EMPTY:
+					elif get_array(pos.x - j - 1, pos.y + i) != Constants.EMPTY:
 						max_distance = j
 						break_out = true
 	elif axis == 'y':
@@ -352,17 +350,18 @@ func max_legal_distance(block: Block, axis: String, direction: int) -> int:
 				
 				if direction > 0:
 					var y_above = pos.y + dims.y + j
+					
 					if y_above == y_size:
 						max_distance = j
 						break_out = true
-					elif array[y_above*x_size + pos.x + i] != Constants.EMPTY:
+					elif get_array(pos.x + i, y_above) != Constants.EMPTY:
 						max_distance = j
 						break_out = true
 				elif direction < 0:
 					if pos.y - j == 0:
 						max_distance = j
 						break_out = true
-					elif array[(pos.y - j - 1)*x_size + pos.x + i] != Constants.EMPTY:
+					elif get_array(pos.x + i, pos.y - j - 1) != Constants.EMPTY:
 						max_distance = j
 						break_out = true
 	
