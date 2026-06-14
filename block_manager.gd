@@ -388,18 +388,18 @@ func _on_initial_load_timer_timeout() -> void:
 	pass #_ready()#load_level(0)
 
 func check_breaker_tiles():
-	var id = EMPTY
+	var id = Constants.EMPTY
 	var should_break_block = true
 	
 	for tile in breaker_tiles:
 		var id_at_tile = get_array(tile.x, tile.y)
 		
-		if id_at_tile == EMPTY:
+		if id_at_tile == Constants.EMPTY:
 			should_break_block = false
 			break
 		else:
 			if id != id_at_tile:
-				if id == EMPTY:
+				if id == Constants.EMPTY:
 					id = id_at_tile
 				else:
 					should_break_block = false
