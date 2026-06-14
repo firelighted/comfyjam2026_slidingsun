@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="LevelResource" load_steps=2 format=3 uid="uid://c4ci4v372brg2"]
+[gd_resource type="Resource" script_class="LevelResource" load_steps=2 format=3 uid="uid://ddjwv16tnpif1"]
 
 [ext_resource type="Script" path="res://resources/level_resource.gd" id="1_tyf0m"]
 
@@ -7,3 +7,5 @@ script = ExtResource("1_tyf0m")
 easy_edit_array = Array[String](["0, 0, -1, -1", "0, 0, -1, -1", "-1, 1, 1, 1", "-1, -1, -1, -1"])
 x_size = 4
 y_size = 4
+goal_tiles = Array[Vector2]([Vector2(0, 0)])
+breaker_tiles = Array[Vector2]([Vector2(0, 3), Vector2(1, 3)])

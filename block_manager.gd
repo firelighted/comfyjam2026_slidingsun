@@ -29,7 +29,6 @@ var level_move_counts : Array[int] = []
 var current_level = 0
 var block_prefab: PackedScene = preload("res://scenes_scripts/block.tscn")
 @onready var block_parent = $BlockParent
-var selected_block: Node
 var level_button_parent: Node
 var won_level_ui : Node
 var won_game_ui : Node
@@ -38,11 +37,13 @@ var game_moves_counter_label : Node
 const SUN_TILE_IDX = 0
 const WIN_ARRAY_IDX = 15 # lower right corner of 4x4 array
 var array = [0,1,2,2,4,Constants.EMPTY,Constants.EMPTY,3,6,6,7]
-var x_size: int = 4
-var y_size: int = 4
-var cells: int = 16
-var moves_this_level: int = 0
+var breaker_tiles: Array[Vector2] = []
+var x_size: int
+var y_size: int
+var cells: int
+var block_num: int = 0
 
+var selected_block: Node
 var is_dragging = false
 
 
@@ -71,7 +72,7 @@ func _ready() -> void:
 	moves_this_level = 0
 	$"../UI_foreground/HBoxContainer/ResetLevelButton".pressed.connect(_on_reset_level_button_pressed)
 	$"../UI_foreground/Won_Level_UI/Button".pressed.connect(_on_next_level_button_pressed)
-	load_level(0)
+	load_level(1)
 
 func _notification(what):
 	if what == NOTIFICATION_WM_MOUSE_EXIT:
@@ -108,7 +109,7 @@ func receive_block_just_deselected(
 	block: Block, prev_pos: Vector2, new_pos: Vector2
 ):
 	update_array(prev_pos, new_pos, block.dims, block.block_id)
-	print("receive_block_just_deselected")
+	check_breaker_tiles()
 	print(array)
 	check_for_win()
 
@@ -136,10 +137,10 @@ func load_level(level_idx:int, add_to_total: bool=true):
 	if current_level > -1 and current_level < len(level_move_counts):
 		level_move_counts[current_level] = moves_this_level
 	if level_idx < len(levels):
-		current_level = level_idx
-		array = levels[level_idx].duplicate(true)
-		x_size = 4
-		y_size = 4
+		array = levels[level_idx].initial_array()
+		x_size = levels[level_idx].x_size
+		y_size = levels[level_idx].y_size
+		breaker_tiles = levels[level_idx].breaker_tiles
 		cells = x_size * y_size
 	else:
 		push_warning("Using default level, no valid current_level in levels array")
@@ -205,12 +206,15 @@ func get_block_height(block_id):
 	
 	return height
 
-
-func spawn_blocks():
+func clear_blocks():
 	for block in block_parent.get_children():
 		block.queue_free()
 	blocks.clear()
 	selected_block = null
+	block_num = 0
+
+func spawn_blocks():
+	clear_blocks()
 	
 	var complete_blocks = []  # unique blocks, to prevent duplicates for large blocks
 	for y in range(y_size):
@@ -220,6 +224,8 @@ func spawn_blocks():
 				if block_id != Constants.EMPTY:
 					blocks.push_back(_create_block(block_id, x, y))
 					complete_blocks.push_back(block_id)
+	
+	block_num = complete_blocks.size()
 
 func _create_block(block_id, row, col):
 	var block = block_prefab.instantiate()
@@ -380,3 +386,30 @@ func _on_reset_level_button_pressed() -> void:
 
 func _on_initial_load_timer_timeout() -> void:
 	pass #_ready()#load_level(0)
+
+func check_breaker_tiles():
+	var id = EMPTY
+	var should_break_block = true
+	
+	for tile in breaker_tiles:
+		var id_at_tile = get_array(tile.x, tile.y)
+		
+		if id_at_tile == EMPTY:
+			should_break_block = false
+			break
+		else:
+			if id != id_at_tile:
+				if id == EMPTY:
+					id = id_at_tile
+				else:
+					should_break_block = false
+					break
+	
+	if should_break_block:
+		_break_block(id)
+
+### breaker_tiles will all be nonempty and occupied by the same block
+func _break_block(id: int) -> void:
+	print("break this block")
+	#for tile in breaker_tiles:
+		#var id_at_tile = get_array(tile.x, tile.y)
