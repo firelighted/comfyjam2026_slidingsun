@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://b68t311mpj4pr"]
+[gd_scene load_steps=15 format=3 uid="uid://b68t311mpj4pr"]
 
 [ext_resource type="Script" path="res://block_manager.gd" id="1_5ua2j"]
 [ext_resource type="Theme" uid="uid://dqbku2qxufg7j" path="res://theme/main_theme.tres" id="1_stk34"]
@@ -7,6 +7,9 @@
 [ext_resource type="LabelSettings" uid="uid://b4qx5deogc1w8" path="res://theme/DEBUG_labelsetting.tres" id="3_ytdtc"]
 [ext_resource type="PackedScene" uid="uid://c1nqrhcqdwaqy" path="res://scenes_scripts/block.tscn" id="6_6y1a6"]
 [ext_resource type="Texture2D" uid="uid://cihbuf5w5dxhy" path="res://icon.svg" id="7_8hjc0"]
+[ext_resource type="LabelSettings" uid="uid://b7njf8ocvr8ys" path="res://theme/move_counter_label_settings.tres" id="8_chis1"]
+[ext_resource type="LabelSettings" uid="uid://cifshari8du0k" path="res://theme/title_label_settings.tres" id="9_pik1o"]
+[ext_resource type="LabelSettings" uid="uid://3ij2qfdqckw8" path="res://theme/subtitle_label_settings.tres" id="10_f8cbi"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ivpb4"]
 font_size = 27
@@ -21,14 +24,6 @@ size = Vector2(615, 45)
 [sub_resource type="Curve" id="Curve_ihapv"]
 _data = [Vector2(0, 0.296703), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
 point_count = 2
-
-[sub_resource type="LabelSettings" id="LabelSettings_fltq5"]
-font_size = 80
-font_color = Color(0.211765, 0.486275, 0.313726, 1)
-outline_size = 40
-shadow_size = 40
-shadow_color = Color(0.2156, 0.49, 0.316213, 0.482353)
-shadow_offset = Vector2(10, 10)
 
 [node name="Node" type="Node"]
 
@@ -168,6 +163,7 @@ text = " Reset Level "
 [node name="MoveCounterLabel" type="Label" parent="UI_foreground/HBoxContainer"]
 layout_mode = 2
 text = "0 moves"
+label_settings = ExtResource("8_chis1")
 
 [node name="LevelButtonParent" type="VBoxContainer" parent="UI_foreground"]
 layout_mode = 0
@@ -192,7 +188,7 @@ grow_vertical = 2
 [node name="WonLabel" type="Label" parent="UI_foreground/Won_Level_UI"]
 layout_mode = 2
 text = "WON LEVEL!"
-label_settings = SubResource("LabelSettings_fltq5")
+label_settings = ExtResource("9_pik1o")
 
 [node name="Button" type="Button" parent="UI_foreground/Won_Level_UI"]
 layout_mode = 2
@@ -216,10 +212,15 @@ grow_vertical = 2
 layout_mode = 2
 size_flags_horizontal = 4
 text = "WON GAME!"
-label_settings = SubResource("LabelSettings_fltq5")
+label_settings = ExtResource("9_pik1o")
 
 [node name="Moves_This_Game_Label" type="Label" parent="UI_foreground/Won_Game_UI"]
+custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
+text = "12 TOTAL MOVES"
+label_settings = ExtResource("10_f8cbi")
+horizontal_alignment = 1
+autowrap_mode = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI_foreground"]
 layout_mode = 1
