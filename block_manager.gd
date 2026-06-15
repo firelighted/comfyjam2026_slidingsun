@@ -4,7 +4,6 @@ extends Node2D
 @export var won_level_ui_path: NodePath = "../UI_foreground/Won_Level_UI"
 @export var won_game_ui_path: NodePath = "../UI_foreground/Won_Game_UI"
 @export var game_moves_counter_label_path: NodePath = "../UI_foreground/Won_Game_UI/Moves_This_Game_Label"
-@export var levels_folder_path : String = "res://levels/"
 @export var blocks : Array[Node]
 @export var levels : Array[Array] = [
 	[
@@ -52,8 +51,6 @@ var is_dragging = false
 ###
 
 func _ready() -> void:
-	if not levels:
-		levels = get_levels_from_folder(levels_folder_path)
 	
 	level_button_parent = get_node(level_button_parent_path)
 	won_level_ui = get_node(won_level_ui_path)
