@@ -1,6 +1,9 @@
 extends Node2D
 
-@export var level_button_parent_path : NodePath = "../UI/LevelButtonParent"
+@export var level_button_parent_path : NodePath = "../UI_foreground/LevelButtonParent"
+@export var won_level_ui_path: NodePath = "../UI_foreground/Won_Level_UI"
+@export var won_game_ui_path: NodePath = "../UI_foreground/Won_Game_UI"
+@export var game_moves_counter_label_path: NodePath = "../UI_foreground/Won_Game_UI/Moves_This_Game_Label"
 @export var levels_folder_path : String = "res://levels/"
 @export var blocks : Array[Node]
 @export var levels : Array[LevelResource]
@@ -9,11 +12,18 @@ var block_prefab: PackedScene = preload("res://scenes_scripts/block.tscn")
 @onready var block_parent = $BlockParent
 var selected_block: Node
 var level_button_parent: Node
+var won_level_ui : Node
+var won_game_ui : Node
+var game_moves_counter_label : Node
 
+const SUN_TILE_IDX = 0
+const WIN_ARRAY_IDX = 15 # lower right corner of 4x4 array
 var array = [0,1,2,2,4,Constants.EMPTY,Constants.EMPTY,3,6,6,7]
 var x_size: int
 var y_size: int
 var cells: int
+var moves_this_level: int = 0
+var moves_this_game: int = 0
 
 var is_dragging = false
 
@@ -27,6 +37,9 @@ func _ready() -> void:
 		levels = get_levels_from_folder(levels_folder_path)
 	
 	level_button_parent = get_node(level_button_parent_path)
+	won_level_ui = get_node(won_level_ui_path)
+	won_game_ui = get_node(won_game_ui_path)
+	game_moves_counter_label = get_node(game_moves_counter_label_path)
 	# make buttons for choosing level
 	var level_button_prefab = preload("res://scenes_scripts/level_button.tscn")
 	for i in range(len(levels)):
@@ -36,6 +49,10 @@ func _ready() -> void:
 		level_button_parent.add_child(button)
 	# start level 0
 	load_level(0)
+	won_level_ui.visible = false
+	won_game_ui.visible = false
+	moves_this_level = 0
+	moves_this_game = 0
 
 func _notification(what):
 	if what == NOTIFICATION_WM_MOUSE_EXIT:
@@ -68,14 +85,26 @@ func receive_block_just_deselected(
 ):
 	update_array(prev_pos, new_pos, block.dims, block.block_id)
 	print(array)
+	check_for_win()
 
 
 ###
 ### CUSTOM METHODS
 ###
 
+func check_for_win():
+	if array[WIN_ARRAY_IDX] == SUN_TILE_IDX:
+		print("win")
+		if current_level < len(levels) -1:
+			won_level_ui.visible = true
+		else:
+			game_moves_counter_label.text = str(moves_this_game) + " TOTAL MOVES"
+			won_game_ui.visible = true
+			
+
 func load_level(level_idx:int):
 	if level_idx < len(levels):
+		current_level = level_idx
 		array = levels[level_idx].initial_array()
 		x_size = levels[level_idx].x_size
 		y_size = levels[level_idx].y_size
@@ -84,6 +113,10 @@ func load_level(level_idx:int):
 		print("Using default level, no valid current_level in levels array")
 	init_array()
 	spawn_blocks()
+	won_level_ui.visible = false
+	won_game_ui.visible = false
+	moves_this_level = 0
+	increment_move_counters(0)
 	
 func get_levels_from_folder(folder_path: String):
 	var resources : Array[LevelResource] = []
@@ -184,11 +217,16 @@ func get_array(x: int, y: int) -> int:
 	var idx = (y * x_size) + x
 	return array[idx]
 
+func increment_move_counters(increment=1):
+	moves_this_level += increment
+	moves_this_game += increment
+	$"../UI_foreground/HBoxContainer/MoveCounterLabel".text = str(moves_this_level) + " level moves, " + str(moves_this_game) + " total moves"
+
 func update_array(
 	prev_pos: Vector2, new_pos: Vector2, block_dims: Vector2, val: int
 ) -> void:
 	if new_pos == prev_pos: return # no update to be made
-	
+	increment_move_counters()
 	var dir = new_pos - prev_pos # dir != Vector2.ZERO
 	var sign_x = signi(dir.x)
 	var sign_y = signi(dir.y)
@@ -282,3 +320,12 @@ func max_legal_distance(block: Block, axis: String, direction: int) -> int:
 						break_out = true
 	
 	return max_distance
+
+
+func _on_next_level_button_pressed() -> void:
+	if current_level < len(levels):
+		load_level(current_level + 1)
+	
+
+func _on_reset_level_button_pressed() -> void:
+	load_level(current_level)
