@@ -14,3 +14,4 @@ default_font_size = 30
 Button/styles/hover = ExtResource("1_u5jj7")
 Button/styles/normal = SubResource("StyleBoxFlat_gmim1")
 Button/styles/pressed = ExtResource("1_u5jj7")
+HBoxContainer/constants/separation = 10

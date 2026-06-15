@@ -53,6 +53,8 @@ func _ready() -> void:
 	won_level_ui.visible = false
 	won_game_ui.visible = false
 	moves_this_level = 0
+	$"../UI_foreground/HBoxContainer/ResetLevelButton".pressed.connect(_on_reset_level_button_pressed)
+	$"../UI_foreground/Won_Level_UI/Button".pressed.connect(_on_next_level_button_pressed)
 
 func _notification(what):
 	if what == NOTIFICATION_WM_MOUSE_EXIT:
