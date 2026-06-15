@@ -81,6 +81,11 @@ position = Vector2(552, 255)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Main2D/wall_right"]
 shape = SubResource("RectangleShape2D_lnwij")
 
+[node name="InitialLoadTimer" type="Timer" parent="Main2D"]
+wait_time = 0.2
+one_shot = true
+autostart = true
+
 [node name="DEBUG_mouseclick" type="Sprite2D" parent="."]
 visible = false
 self_modulate = Color(1, 0, 0, 1)
@@ -95,6 +100,8 @@ width_curve = SubResource("Curve_ihapv")
 default_color = Color(1, 0, 0, 1)
 
 [node name="UI_foreground" parent="." instance=ExtResource("8_fc2fl")]
+
+[connection signal="timeout" from="Main2D/InitialLoadTimer" to="Main2D" method="_on_initial_load_timer_timeout"]
 
 [editable path="UI_bkgd"]
 [editable path="UI_foreground"]

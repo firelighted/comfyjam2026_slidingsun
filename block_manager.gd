@@ -6,7 +6,26 @@ extends Node2D
 @export var game_moves_counter_label_path: NodePath = "../UI_foreground/Won_Game_UI/Moves_This_Game_Label"
 @export var levels_folder_path : String = "res://levels/"
 @export var blocks : Array[Node]
-@export var levels : Array[LevelResource]
+@export var levels : Array[Array] = [
+	[
+		2,2,3,3,
+		0,0,0,1,
+		5,6,7,1,
+		-1,-1,-1,9
+	],
+	[
+		0,1,2,3,
+		5,5,4,4,
+		-1,-1,9,10,
+		-1,-1,9,10,
+	],
+	[
+		0,1,2,3,
+		4,4,5,5,
+		6,7,8,8,
+		-1,-1,9,10
+	]
+]
 var level_move_counts : Array[int] = []
 var current_level = 0
 var block_prefab: PackedScene = preload("res://scenes_scripts/block.tscn")
@@ -20,9 +39,9 @@ var game_moves_counter_label : Node
 const SUN_TILE_IDX = 0
 const WIN_ARRAY_IDX = 15 # lower right corner of 4x4 array
 var array = [0,1,2,2,4,Constants.EMPTY,Constants.EMPTY,3,6,6,7]
-var x_size: int
-var y_size: int
-var cells: int
+var x_size: int = 4
+var y_size: int = 4
+var cells: int = 16
 var moves_this_level: int = 0
 
 var is_dragging = false
@@ -48,13 +67,14 @@ func _ready() -> void:
 		button.sibling_button_pressed.connect(receive_level_button_pressed)
 		level_button_parent.add_child(button)
 		level_move_counts.append(0)
+		print("loaded level " + str(i))
 	# start level 0
-	load_level(0)
 	won_level_ui.visible = false
 	won_game_ui.visible = false
 	moves_this_level = 0
 	$"../UI_foreground/HBoxContainer/ResetLevelButton".pressed.connect(_on_reset_level_button_pressed)
 	$"../UI_foreground/Won_Level_UI/Button".pressed.connect(_on_next_level_button_pressed)
+	load_level(0)
 
 func _notification(what):
 	if what == NOTIFICATION_WM_MOUSE_EXIT:
@@ -114,12 +134,17 @@ func load_level(level_idx:int, add_to_total: bool=true):
 		level_move_counts[current_level] = moves_this_level
 	if level_idx < len(levels):
 		current_level = level_idx
-		array = levels[level_idx].initial_array()
-		x_size = levels[level_idx].x_size
-		y_size = levels[level_idx].y_size
+		array = levels[level_idx].duplicate(true)
+		x_size = 4
+		y_size = 4
 		cells = x_size * y_size
 	else:
-		print("Using default level, no valid current_level in levels array")
+		push_warning("Using default level, no valid current_level in levels array")
+		push_warning("level_idx=" + str(level_idx))
+		var level_text = "levels=\n"
+		for l in levels:
+			level_text += str(l) + "      \n"
+		push_warning(levels)
 	init_array()
 	spawn_blocks()
 	won_level_ui.visible = false
@@ -210,7 +235,7 @@ func init_array():
 		for i in range(len(array), cells):
 			array.append(Constants.EMPTY)
 	elif len(array) > cells:
-		push_warning("array longer than x_size * y_size")
+		push_warning("array "+ str(len(array)) + " longer than x_size * y_size (=" + str(x_size) + " * " + str(y_size) + "), " + str(array))
 
 func print_array():
 	print(array)
@@ -231,8 +256,13 @@ func get_array(x: int, y: int) -> int:
 func increment_move_counters(increment=1):
 	moves_this_level += increment
 	var moves_this_game = 0
-	for i in level_move_counts:
-		moves_this_game += i
+	var idx = 0
+	# Tally up moves in other levels 
+	for level_moves in level_move_counts:
+		if idx != current_level: # only other levels
+			moves_this_game += level_moves
+		idx += 1
+	# Add moves so far this level
 	moves_this_game += moves_this_level
 	$"../UI_foreground/HBoxContainer/MoveCounterLabel".text = str(moves_this_level) + " in Level " + str(current_level) + ", " + str(moves_this_game) + " Total Moves"
 
@@ -344,3 +374,7 @@ func _on_next_level_button_pressed() -> void:
 func _on_reset_level_button_pressed() -> void:
 	moves_this_level = 0
 	load_level(current_level)
+
+
+func _on_initial_load_timer_timeout() -> void:
+	pass #_ready()#load_level(0)
