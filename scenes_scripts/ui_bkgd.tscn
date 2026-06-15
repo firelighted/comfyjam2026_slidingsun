@@ -1,0 +1,59 @@
+[gd_scene load_steps=6 format=3 uid="uid://be06sc2byqitp"]
+
+[ext_resource type="Theme" uid="uid://dqbku2qxufg7j" path="res://theme/main_theme.tres" id="1_m53mb"]
+[ext_resource type="Texture2D" uid="uid://cg14q0lo7puh1" path="res://images/palette.png" id="2_4wewn"]
+[ext_resource type="Texture2D" uid="uid://l6c5b8gwc4ih" path="res://images/tiles/square.png" id="3_vxtcr"]
+[ext_resource type="LabelSettings" uid="uid://b4qx5deogc1w8" path="res://theme/DEBUG_labelsetting.tres" id="4_4gpkc"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_ivpb4"]
+font_size = 27
+font_color = Color(0, 0, 0, 1)
+
+[node name="UI_bkgd" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("1_m53mb")
+
+[node name="background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_4wewn")
+
+[node name="midground" type="TextureRect" parent="."]
+self_modulate = Color(1, 1, 1, 0.584314)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_vxtcr")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 96.0
+offset_top = 586.0
+offset_right = 518.0
+offset_bottom = 623.0
+text = "Click and drag or use arrow keys"
+label_settings = SubResource("LabelSettings_ivpb4")
+
+[node name="DEBUG_instructions" type="Label" parent="."]
+layout_mode = 0
+offset_left = 112.0
+offset_top = 616.0
+offset_right = 291.0
+offset_bottom = 639.0
+text = "RED is for debug things"
+label_settings = ExtResource("4_4gpkc")
