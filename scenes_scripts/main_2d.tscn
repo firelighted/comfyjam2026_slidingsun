@@ -1,9 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://b68t311mpj4pr"]
+[gd_scene load_steps=12 format=3 uid="uid://b68t311mpj4pr"]
 
 [ext_resource type="Script" path="res://block_manager.gd" id="1_5ua2j"]
 [ext_resource type="PackedScene" uid="uid://be06sc2byqitp" path="res://scenes_scripts/ui_bkgd.tscn" id="1_ueq1k"]
 [ext_resource type="Texture2D" uid="uid://cg14q0lo7puh1" path="res://images/palette.png" id="2_31q7j"]
 [ext_resource type="Texture2D" uid="uid://l6c5b8gwc4ih" path="res://images/tiles/square.png" id="2_bb1j8"]
+[ext_resource type="Texture2D" uid="uid://d3yay1s8jl603" path="res://images/tiles/sun_white.png" id="4_xt6tc"]
 [ext_resource type="PackedScene" uid="uid://c1nqrhcqdwaqy" path="res://scenes_scripts/block.tscn" id="6_6y1a6"]
 [ext_resource type="Texture2D" uid="uid://cihbuf5w5dxhy" path="res://icon.svg" id="7_8hjc0"]
 [ext_resource type="PackedScene" uid="uid://ulc42eij556j" path="res://scenes_scripts/ui_foreground.tscn" id="8_fc2fl"]
@@ -39,6 +40,12 @@ position = Vector2(0, 1.43051e-06)
 scale = Vector2(4, 4)
 texture = ExtResource("2_bb1j8")
 offset = Vector2(65, 65.0249)
+
+[node name="SunGoalPosition" type="Sprite2D" parent="Main2D/valid_tile_area_bkgd"]
+position = Vector2(-46, -14.5)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("4_xt6tc")
+centered = false
 
 [node name="BlockParent" type="Node2D" parent="Main2D"]
 

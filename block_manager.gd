@@ -124,6 +124,8 @@ func load_level(level_idx:int, add_to_total: bool=true):
 	won_game_ui.visible = false
 	moves_this_level = 0
 	increment_move_counters(0)
+	var sun_goal_position = (Vector2(x_size-1, y_size-1) + 0.5 * Vector2(1, 1)) * Constants.PIXELS_PER_UNIT
+	$valid_tile_area_bkgd/SunGoalPosition.global_position = sun_goal_position
 	
 func get_levels_from_folder(folder_path: String):
 	var resources : Array[LevelResource] = []
