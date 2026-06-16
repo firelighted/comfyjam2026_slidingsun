@@ -42,6 +42,7 @@ var x_size: int
 var y_size: int
 var cells: int
 var block_num: int = 0
+var moves_this_level: int = 0
 
 var selected_block: Node
 var is_dragging = false
@@ -137,10 +138,10 @@ func load_level(level_idx:int, add_to_total: bool=true):
 	if current_level > -1 and current_level < len(level_move_counts):
 		level_move_counts[current_level] = moves_this_level
 	if level_idx < len(levels):
-		array = levels[level_idx].initial_array()
-		x_size = levels[level_idx].x_size
-		y_size = levels[level_idx].y_size
-		breaker_tiles = levels[level_idx].breaker_tiles
+		array = levels[level_idx].duplicate(true)
+		x_size = 4
+		y_size = 4
+		breaker_tiles = [Vector2(0, 3), Vector2(1, 3)]
 		cells = x_size * y_size
 	else:
 		push_warning("Using default level, no valid current_level in levels array")
