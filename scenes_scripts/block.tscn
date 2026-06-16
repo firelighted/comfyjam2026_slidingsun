@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://c1nqrhcqdwaqy"]
+[gd_scene load_steps=14 format=3 uid="uid://c1nqrhcqdwaqy"]
 
 [ext_resource type="Script" path="res://scenes_scripts/block.gd" id="1_o3usp"]
 [ext_resource type="Shader" path="res://shaders/cloud_tile.gdshader" id="1_ygfc3"]
@@ -8,7 +8,7 @@
 [ext_resource type="LabelSettings" uid="uid://b4qx5deogc1w8" path="res://theme/DEBUG_labelsetting.tres" id="5_280uh"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nichk"]
-size = Vector2(125, 125)
+size = Vector2(120, 120)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_gsa67"]
 frequency = 0.0073
@@ -42,6 +42,9 @@ shader_parameter/noise = SubResource("NoiseTexture2D_w5jev")
 [sub_resource type="LabelSettings" id="LabelSettings_g8qok"]
 font_size = 90
 font_color = Color(0.450648, 0.450648, 0.450648, 1)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_la4ts"]
+size = Vector2(130, 130)
 
 [node name="Block" type="CharacterBody2D"]
 light_mask = 0
@@ -85,7 +88,7 @@ position = Vector2(-3, 81)
 texture = ExtResource("4_kqftf")
 
 [node name="Label" type="Label" parent="."]
-z_index = 100
+z_index = 110
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -103,7 +106,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="DEBUG_array_idxs" type="Label" parent="."]
-z_index = 100
+z_index = 110
 offset_left = -20.0
 offset_top = 38.0
 offset_right = 20.0
@@ -111,4 +114,11 @@ offset_bottom = 61.0
 text = "1,2"
 label_settings = ExtResource("5_280uh")
 
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="TouchScreenButton" type="TouchScreenButton" parent="CanvasLayer"]
+shape = SubResource("RectangleShape2D_la4ts")
+
 [connection signal="input_event" from="Clickable" to="." method="_on_clickable_input_event"]
+[connection signal="pressed" from="CanvasLayer/TouchScreenButton" to="." method="_on_touch_screen_button_pressed"]
+[connection signal="released" from="CanvasLayer/TouchScreenButton" to="." method="_on_touch_screen_button_released"]

@@ -71,7 +71,7 @@ func get_input(): # arrow keys can move selected tile
 	velocity = input_dir * arrow_key_speed
 	want_to_move.emit(block_id, grid_pos, input_dir)
 
-func start_drag():
+func start_drag(is_touch: bool=false):
 	drag_start = get_global_mouse_position()
 	is_dragging = true
 	is_selected = true
@@ -83,7 +83,7 @@ func start_drag():
 	just_selected.emit(self, block_id, grid_pos)
 
 
-func end_drag():
+func end_drag(is_touch:bool=false):
 	var prev_pos = grid_pos
 	is_dragging = false
 	is_selected = false
@@ -152,3 +152,35 @@ func _on_clickable_input_event(_viewport: Node, event: InputEvent, _shape_idx: i
 				start_drag()
 			else:
 				end_drag()
+	#elif event is InputEventScreenDrag:
+		#if event.get_pressure() < 0.1:
+			#end_drag()
+			#
+	#elif event is InputEventScreenTouch:
+		#if event.is_pressed():
+			#start_drag(true)
+		#else:
+			#end_drag(true)
+		#pass
+	#elif event is InputEventScreenDrag:
+		#if event.is_pressed():
+			#start_drag()
+		#else:
+			#end_drag()
+		##pass	
+	#elif event is InputEventMouseMotion:
+		#if event.is_pressed():
+			#start_drag()
+		#else:
+			#end_drag()
+	#else:
+		#print("_on_clickable_input_event")
+		#print(event)
+
+
+func _on_touch_screen_button_pressed() -> void:
+	start_drag(true)
+
+
+func _on_touch_screen_button_released() -> void:
+	end_drag(true)

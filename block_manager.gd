@@ -78,6 +78,11 @@ func _notification(what):
 		if is_instance_valid(selected_block):
 			selected_block.end_drag()
 
+	#if what == NOTIFICATION_DRAG_END:
+		## Drag data is no longer available and has been disposed already
+		#print("Drag ended. Success: ", get_viewport().gui_is_drag_successful())
+		#if is_instance_valid(selected_block):
+			#selected_block.end_drag()
 ###
 ### RECEIVERS 
 ###
@@ -103,6 +108,7 @@ func receive_block_just_deselected(
 	block: Block, prev_pos: Vector2, new_pos: Vector2
 ):
 	update_array(prev_pos, new_pos, block.dims, block.block_id)
+	print("receive_block_just_deselected")
 	print(array)
 	check_for_win()
 

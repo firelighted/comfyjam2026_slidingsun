@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://bucq7kv38e42"]
+[gd_scene load_steps=11 format=3 uid="uid://bucq7kv38e42"]
 
 [ext_resource type="Script" path="res://scenes_scripts/umbrella.gd" id="1_bg5tw"]
 [ext_resource type="Texture2D" uid="uid://ipw232pwpnij" path="res://images/ground/umbrella-Sheet.png" id="2_5gif6"]
@@ -97,6 +97,9 @@ _data = {
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qsbmj"]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_kwjdf"]
+radius = 50.0
+
 [node name="Umbrella" type="Node2D"]
 script = ExtResource("1_bg5tw")
 
@@ -129,4 +132,10 @@ pivot_offset = Vector2(35, 35)
 theme_override_styles/focus = SubResource("StyleBoxEmpty_qsbmj")
 flat = true
 
+[node name="TouchScreenButton" type="TouchScreenButton" parent="."]
+visible = false
+shape = SubResource("CircleShape2D_kwjdf")
+
 [connection signal="pressed" from="OpenCloseUmbrellaButton" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="TouchScreenButton" to="." method="_on_touch_screen_button_pressed"]
+[connection signal="released" from="TouchScreenButton" to="." method="_on_touch_screen_button_released"]

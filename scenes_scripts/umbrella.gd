@@ -33,4 +33,12 @@ func change_state(new_state_is_open):
 
 
 func _on_button_pressed() -> void:
+	pass #change_state(!is_open)
+
+
+func _on_touch_screen_button_pressed() -> void:
 	change_state(!is_open)
+
+
+func _on_touch_screen_button_released() -> void:
+	pass

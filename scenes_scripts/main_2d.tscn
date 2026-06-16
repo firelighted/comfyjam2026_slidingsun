@@ -1,10 +1,11 @@
-[gd_scene load_steps=12 format=3 uid="uid://b68t311mpj4pr"]
+[gd_scene load_steps=13 format=3 uid="uid://b68t311mpj4pr"]
 
 [ext_resource type="Script" path="res://block_manager.gd" id="1_5ua2j"]
-[ext_resource type="PackedScene" path="res://scenes_scripts/ui_bkgd.tscn" id="1_ueq1k"]
+[ext_resource type="PackedScene" uid="uid://be06sc2byqitp" path="res://scenes_scripts/ui_bkgd.tscn" id="1_ueq1k"]
 [ext_resource type="Texture2D" uid="uid://cg14q0lo7puh1" path="res://images/palette.png" id="2_31q7j"]
-[ext_resource type="Texture2D" uid="uid://l6c5b8gwc4ih" path="res://images/tiles/square.png" id="2_bb1j8"]
+[ext_resource type="Texture2D" uid="uid://qixnn3lrl0vn" path="res://images/tiles/squircle_border.png" id="3_oqrwf"]
 [ext_resource type="Texture2D" uid="uid://d3yay1s8jl603" path="res://images/tiles/sun_white.png" id="4_xt6tc"]
+[ext_resource type="PackedScene" uid="uid://bucq7kv38e42" path="res://scenes_scripts/umbrella.tscn" id="5_jqc7k"]
 [ext_resource type="PackedScene" uid="uid://c1nqrhcqdwaqy" path="res://scenes_scripts/block.tscn" id="6_6y1a6"]
 [ext_resource type="Texture2D" uid="uid://cihbuf5w5dxhy" path="res://icon.svg" id="7_8hjc0"]
 [ext_resource type="PackedScene" uid="uid://ulc42eij556j" path="res://scenes_scripts/ui_foreground.tscn" id="8_fc2fl"]
@@ -38,7 +39,7 @@ script = ExtResource("1_5ua2j")
 self_modulate = Color(1, 1, 1, 0.572549)
 position = Vector2(0, 1.43051e-06)
 scale = Vector2(4, 4)
-texture = ExtResource("2_bb1j8")
+texture = ExtResource("3_oqrwf")
 offset = Vector2(65, 65.0249)
 
 [node name="SunGoalPosition" type="Sprite2D" parent="Main2D/valid_tile_area_bkgd"]
@@ -47,6 +48,23 @@ position = Vector2(144, 95.5)
 scale = Vector2(0.25, 0.25)
 texture = ExtResource("4_xt6tc")
 centered = false
+
+[node name="UmbrellaParent" type="Node2D" parent="Main2D"]
+
+[node name="Umbrella" parent="Main2D/UmbrellaParent" instance=ExtResource("5_jqc7k")]
+position = Vector2(-32, 422)
+
+[node name="Umbrella2" parent="Main2D/UmbrellaParent" instance=ExtResource("5_jqc7k")]
+position = Vector2(208, 470)
+
+[node name="Umbrella3" parent="Main2D/UmbrellaParent" instance=ExtResource("5_jqc7k")]
+position = Vector2(424, 102)
+
+[node name="Umbrella4" parent="Main2D/UmbrellaParent" instance=ExtResource("5_jqc7k")]
+position = Vector2(88, 126)
+
+[node name="Umbrella5" parent="Main2D/UmbrellaParent" instance=ExtResource("5_jqc7k")]
+position = Vector2(280, 302)
 
 [node name="BlockParent" type="Node2D" parent="Main2D"]
 
@@ -100,6 +118,7 @@ width_curve = SubResource("Curve_ihapv")
 default_color = Color(1, 0, 0, 1)
 
 [node name="UI_foreground" parent="." instance=ExtResource("8_fc2fl")]
+z_index = 500
 
 [connection signal="timeout" from="Main2D/InitialLoadTimer" to="Main2D" method="_on_initial_load_timer_timeout"]
 
