@@ -4,7 +4,7 @@ extends Node2D
 @export var won_level_ui_path: NodePath = "../UI_foreground/Won_Level_UI"
 @export var won_game_ui_path: NodePath = "../UI_foreground/Won_Game_UI"
 @export var game_moves_counter_label_path: NodePath = "../UI_foreground/Won_Game_UI/Moves_This_Game_Label"
-@export var blocks : Array[Node]
+@export var blocks : Array[Block]
 @export var levels : Array[Array] = [
 	[
 		2,2,3,3,
@@ -114,6 +114,18 @@ func receive_block_just_deselected(
 	print(array)
 	check_for_win()
 
+func _on_next_level_button_pressed() -> void:
+	if current_level < len(levels):
+		load_level(current_level + 1)
+	
+
+func _on_reset_level_button_pressed() -> void:
+	moves_this_level = 0
+	load_level(current_level)
+
+
+func _on_initial_load_timer_timeout() -> void:
+	pass #_ready()#load_level(0)
 
 ###
 ### CUSTOM METHODS
@@ -180,6 +192,13 @@ func get_levels_from_folder(folder_path: String):
 func receive_level_button_pressed(sibling_idx: int):
 	load_level(sibling_idx)
 
+### finds a block by its id
+func get_block(block_id) -> Block:
+	for block in blocks:
+		if block.block_id == block_id:
+			return block
+	
+	return null
 
 func get_block_width(block_id):
 	var width = 0
@@ -260,6 +279,10 @@ func print_array():
 func get_array(x: int, y: int) -> int:
 	var idx = (y * x_size) + x
 	return array[idx]
+
+func set_array(val: int, x: int, y: int) -> void:
+	var idx = (y * x_size) + x
+	array[idx] = val
 
 func increment_move_counters(increment=1):
 	moves_this_level += increment
@@ -374,20 +397,7 @@ func max_legal_distance(block: Block, axis: String, direction: int) -> int:
 	
 	return max_distance
 
-
-func _on_next_level_button_pressed() -> void:
-	if current_level < len(levels):
-		load_level(current_level + 1)
-	
-
-func _on_reset_level_button_pressed() -> void:
-	moves_this_level = 0
-	load_level(current_level)
-
-
-func _on_initial_load_timer_timeout() -> void:
-	pass #_ready()#load_level(0)
-
+### will check wether a block is fully on top of the special "breaker" tiles
 func check_breaker_tiles():
 	var id = Constants.EMPTY
 	var should_break_block = true
@@ -409,8 +419,32 @@ func check_breaker_tiles():
 	if should_break_block:
 		_break_block(id)
 
+### finds the lowest id number that's not being used by a block
+func _find_lowest_unoccupied_id() -> int:
+	var ids_present = []
+	for block in blocks:
+		ids_present.push_back(block.block_id)
+	
+	var i = 0
+	while i in ids_present:
+		i += 1
+	
+	return i
+
+### breaks a block down into smaller blocks
 ### breaker_tiles will all be nonempty and occupied by the same block
 func _break_block(id: int) -> void:
-	print("break this block")
-	#for tile in breaker_tiles:
-		#var id_at_tile = get_array(tile.x, tile.y)
+	var first_loop = true
+	
+	for tile in breaker_tiles:
+		var id_at_tile = get_array(tile.x, tile.y)
+		var b = get_block(id_at_tile)
+		
+		# first loop: take the original block and change it to 1x1
+		if first_loop:
+			first_loop = false
+			b.set_variables(id_at_tile, 1, 1, tile.x, tile.y)
+		else: # second loop: create new blocks and add them to the level
+			var new_id = _find_lowest_unoccupied_id()
+			set_array(new_id, tile.x, tile.y)
+			blocks.push_back(_create_block(new_id, tile.x, tile.y))
