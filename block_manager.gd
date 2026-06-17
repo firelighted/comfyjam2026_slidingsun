@@ -25,10 +25,22 @@ extends Node2D
 		-1,-1,9,10
 	]
 ]
+
+const breaker_tiles_level_0 : Array[Vector2] = [Vector2(0, 3), Vector2(1, 3)]
+const breaker_tiles_level_1 : Array[Vector2] = [Vector2(0, 0)]
+const breaker_tiles_level_2 : Array[Vector2] = [Vector2(3, 0)]
+# locations for wind breaker tiles in each level
+var breaker_tiles_levels = [
+	breaker_tiles_level_0,
+	breaker_tiles_level_1,
+	breaker_tiles_level_2,
+]
 var level_move_counts : Array[int] = []
 var current_level = 0
 var block_prefab: PackedScene = preload("res://scenes_scripts/block.tscn")
+var wind_prefab: PackedScene = preload("res://scenes_scripts/wind_sprite.tscn")
 @onready var block_parent = $BlockParent
+@onready var breaker_parent = $BreakerParent
 var level_button_parent: Node
 var won_level_ui : Node
 var won_game_ui : Node
@@ -153,7 +165,7 @@ func load_level(level_idx:int, add_to_total: bool=true):
 		array = levels[level_idx].duplicate(true)
 		x_size = 4
 		y_size = 4
-		breaker_tiles = [Vector2(0, 3), Vector2(1, 3)]
+		breaker_tiles = breaker_tiles_levels[level_idx].duplicate(true)
 		cells = x_size * y_size
 	else:
 		push_warning("Using default level, no valid current_level in levels array")
@@ -164,6 +176,7 @@ func load_level(level_idx:int, add_to_total: bool=true):
 		push_warning(levels)
 	init_array()
 	spawn_blocks()
+	spawn_breaker_markers()
 	won_level_ui.visible = false
 	won_game_ui.visible = false
 	moves_this_level = 0
@@ -188,7 +201,22 @@ func get_levels_from_folder(folder_path: String):
 		printerr("Failed to open directory: ", folder_path)
 
 	return resources
-	
+
+func spawn_breaker_markers():
+	for tile in breaker_tiles:
+		var wind = wind_prefab.instantiate()
+		snap_to_position_from_row_col(wind, tile)
+		breaker_parent.add_child(wind)
+		# random delay before animations start to prevent
+		# all wind from doing the same anim at the same exact time
+		await get_tree().create_timer(randf_range(0,5)).timeout
+		wind.get_child(0).play("idle")
+
+func snap_to_position_from_row_col(node_to_move: Node, grid_pos, dims_of_node = Vector2(1,1)):
+	var new_position = (grid_pos + 0.5 * dims_of_node) * Constants.PIXELS_PER_UNIT
+	node_to_move.position = new_position
+		
+
 func receive_level_button_pressed(sibling_idx: int):
 	load_level(sibling_idx)
 
@@ -227,6 +255,8 @@ func get_block_height(block_id):
 	return height
 
 func clear_blocks():
+	for wind in breaker_parent.get_children():
+		wind.queue_free()
 	for block in block_parent.get_children():
 		block.queue_free()
 	blocks.clear()
