@@ -26,9 +26,9 @@ extends Node2D
 	]
 ]
 
-const breaker_tiles_level_0 : Array[Vector2] = [Vector2(3, 3), Vector2(3, 3)]
+const breaker_tiles_level_0 : Array[Vector2] = [Vector2(2, 3), Vector2(3, 3)]
 const breaker_tiles_level_1 : Array[Vector2] = [Vector2(0, 3), Vector2(1, 3)]
-const breaker_tiles_level_2 : Array[Vector2] = [Vector2(3, 0)]
+const breaker_tiles_level_2 : Array[Vector2] = [Vector2(3, 0), Vector2(2,0)]
 # locations for wind breaker tiles in each level
 var breaker_tiles_levels = [
 	breaker_tiles_level_0,
@@ -85,7 +85,8 @@ func _ready() -> void:
 	moves_this_level = 0
 	$"../UI_foreground/HBoxContainer/ResetLevelButton".pressed.connect(_on_reset_level_button_pressed)
 	$"../UI_foreground/Won_Level_UI/Button".pressed.connect(_on_next_level_button_pressed)
-	load_level(1)
+	current_level = 0
+	load_level(current_level)
 
 func _notification(what):
 	if what == NOTIFICATION_WM_MOUSE_EXIT:
@@ -159,8 +160,10 @@ func check_for_win():
 			
 
 func load_level(level_idx:int, add_to_total: bool=true):
-	if current_level > -1 and current_level < len(level_move_counts):
+	# record move counts
+	if add_to_total:
 		level_move_counts[current_level] = moves_this_level
+	current_level = level_idx
 	if level_idx < len(levels):
 		array = levels[level_idx].duplicate(true)
 		x_size = 4
@@ -203,6 +206,8 @@ func get_levels_from_folder(folder_path: String):
 	return resources
 
 func spawn_breaker_markers():
+	for wind in breaker_parent.get_children():
+		wind.queue_free()
 	for tile in breaker_tiles:
 		var wind = wind_prefab.instantiate()
 		snap_to_position_from_row_col(wind, tile)
@@ -210,7 +215,8 @@ func spawn_breaker_markers():
 		var wind_path = wind.get_path()
 		# random delay before animations start to prevent
 		# all wind from doing the same anim at the same exact time
-		await get_tree().create_timer(randf_range(0,5)).timeout
+		await get_tree().create_timer(randf_range(0,2)).timeout
+		# protect against node being deleted before anim starts
 		if get_node_or_null(wind_path):
 			wind.get_child(0).play("idle")
 
@@ -257,8 +263,6 @@ func get_block_height(block_id):
 	return height
 
 func clear_blocks():
-	for wind in breaker_parent.get_children():
-		wind.queue_free()
 	for block in block_parent.get_children():
 		block.queue_free()
 	blocks.clear()
