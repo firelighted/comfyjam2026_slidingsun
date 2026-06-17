@@ -12,6 +12,7 @@ signal just_deselected(
 @onready var clickable = $Clickable
 @onready var label = $Label
 @onready var selected_sprite = $Clickable/selected_texture
+@onready var particles = $Particles
 
 var block_id = -1
 var dims = Vector2(1, 1)
@@ -49,6 +50,10 @@ func _physics_process(_delta):
 ###
 ### CUSTOM METHODS
 ###
+
+func show_break():
+	particles.restart()
+	particles.emitting = true
 
 func set_variables(new_block_id, width: int, height: int, row: int, col: int):
 	self.block_id = new_block_id

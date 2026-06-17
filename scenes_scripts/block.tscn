@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://c1nqrhcqdwaqy"]
+[gd_scene load_steps=16 format=3 uid="uid://c1nqrhcqdwaqy"]
 
 [ext_resource type="Script" path="res://scenes_scripts/block.gd" id="1_o3usp"]
 [ext_resource type="Shader" path="res://shaders/cloud_tile.gdshader" id="1_ygfc3"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://dir1qm5nt4uoj" path="res://images/tiles/selected_tile.png" id="3_lgxio"]
 [ext_resource type="Texture2D" uid="uid://cg14q0lo7puh1" path="res://images/palette.png" id="4_kqftf"]
 [ext_resource type="LabelSettings" uid="uid://b4qx5deogc1w8" path="res://theme/DEBUG_labelsetting.tres" id="5_280uh"]
+[ext_resource type="Texture2D" uid="uid://dosvuaogf8qp4" path="res://images/tiles/cloud_particle.png" id="6_otir6"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nichk"]
 size = Vector2(120, 120)
@@ -38,6 +39,9 @@ shader_parameter/edge_source = 0.0
 shader_parameter/edge_color = Color(0.794272, 0.843837, 0.857672, 1)
 shader_parameter/inner_color = Color(1, 1, 1, 1)
 shader_parameter/noise = SubResource("NoiseTexture2D_w5jev")
+
+[sub_resource type="Gradient" id="Gradient_dv0kw"]
+colors = PackedColorArray(1, 1, 1, 1, 0.55, 0.55, 0.55, 0)
 
 [sub_resource type="LabelSettings" id="LabelSettings_g8qok"]
 font_size = 90
@@ -86,6 +90,26 @@ region_rect = Rect2(45, 45, 405, 405)
 visible = false
 position = Vector2(-3, 81)
 texture = ExtResource("4_kqftf")
+
+[node name="Particles" type="CPUParticles2D" parent="."]
+z_index = 500
+position = Vector2(0, 8)
+emitting = false
+amount = 15
+one_shot = true
+explosiveness = 1.0
+lifetime_randomness = 0.17
+texture = ExtResource("6_otir6")
+emission_shape = 1
+emission_sphere_radius = 104.25
+spread = 180.0
+gravity = Vector2(0, -150)
+initial_velocity_max = 89.17
+angular_velocity_max = 630.45
+angle_min = -467.8
+angle_max = 275.2
+scale_amount_min = 0.0
+color_ramp = SubResource("Gradient_dv0kw")
 
 [node name="Label" type="Label" parent="."]
 z_index = 110

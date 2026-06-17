@@ -70,7 +70,7 @@ position = Vector2(280, 302)
 [node name="BreakerParent" type="Node2D" parent="Main2D"]
 
 [node name="WindSprite" parent="Main2D/BreakerParent" instance=ExtResource("8_yu60x")]
-position = Vector2(65, 455)
+position = Vector2(-272, -130)
 
 [node name="BlockParent" type="Node2D" parent="Main2D"]
 

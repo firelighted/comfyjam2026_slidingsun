@@ -26,8 +26,8 @@ extends Node2D
 	]
 ]
 
-const breaker_tiles_level_0 : Array[Vector2] = [Vector2(0, 3), Vector2(1, 3)]
-const breaker_tiles_level_1 : Array[Vector2] = [Vector2(0, 0)]
+const breaker_tiles_level_0 : Array[Vector2] = [Vector2(3, 3), Vector2(3, 3)]
+const breaker_tiles_level_1 : Array[Vector2] = [Vector2(0, 3), Vector2(1, 3)]
 const breaker_tiles_level_2 : Array[Vector2] = [Vector2(3, 0)]
 # locations for wind breaker tiles in each level
 var breaker_tiles_levels = [
@@ -207,10 +207,12 @@ func spawn_breaker_markers():
 		var wind = wind_prefab.instantiate()
 		snap_to_position_from_row_col(wind, tile)
 		breaker_parent.add_child(wind)
+		var wind_path = wind.get_path()
 		# random delay before animations start to prevent
 		# all wind from doing the same anim at the same exact time
 		await get_tree().create_timer(randf_range(0,5)).timeout
-		wind.get_child(0).play("idle")
+		if get_node_or_null(wind_path):
+			wind.get_child(0).play("idle")
 
 func snap_to_position_from_row_col(node_to_move: Node, grid_pos, dims_of_node = Vector2(1,1)):
 	var new_position = (grid_pos + 0.5 * dims_of_node) * Constants.PIXELS_PER_UNIT
@@ -478,3 +480,5 @@ func _break_block(id: int) -> void:
 			var new_id = _find_lowest_unoccupied_id()
 			set_array(new_id, tile.x, tile.y)
 			blocks.push_back(_create_block(new_id, tile.x, tile.y))
+			b.show_break()
+		
