@@ -1,21 +1,24 @@
-[gd_scene load_steps=14 format=3 uid="uid://b68t311mpj4pr"]
+[gd_scene load_steps=15 format=3 uid="uid://b68t311mpj4pr"]
 
 [ext_resource type="Script" path="res://block_manager.gd" id="1_5ua2j"]
-[ext_resource type="PackedScene" uid="uid://be06sc2byqitp" path="res://scenes_scripts/ui_bkgd.tscn" id="1_ueq1k"]
-[ext_resource type="Texture2D" uid="uid://cg14q0lo7puh1" path="res://images/palette.png" id="2_31q7j"]
-[ext_resource type="Texture2D" uid="uid://qixnn3lrl0vn" path="res://images/tiles/squircle_border.png" id="3_oqrwf"]
-[ext_resource type="Texture2D" uid="uid://d3yay1s8jl603" path="res://images/tiles/sun_white.png" id="4_xt6tc"]
-[ext_resource type="PackedScene" uid="uid://bucq7kv38e42" path="res://scenes_scripts/umbrella.tscn" id="5_jqc7k"]
+[ext_resource type="PackedScene" path="res://scenes_scripts/ui_bkgd.tscn" id="1_ueq1k"]
+[ext_resource type="Texture2D" uid="uid://tmeqmnimt82m" path="res://images/palette.png" id="2_31q7j"]
+[ext_resource type="Texture2D" uid="uid://3aakafrqgw0u" path="res://images/tiles/squircle_border.png" id="3_oqrwf"]
+[ext_resource type="Texture2D" uid="uid://bsyckafe1rorr" path="res://images/tiles/sun_white.png" id="4_xt6tc"]
+[ext_resource type="PackedScene" path="res://scenes_scripts/umbrella.tscn" id="5_jqc7k"]
 [ext_resource type="PackedScene" uid="uid://c1nqrhcqdwaqy" path="res://scenes_scripts/block.tscn" id="6_6y1a6"]
-[ext_resource type="Texture2D" uid="uid://cihbuf5w5dxhy" path="res://icon.svg" id="7_8hjc0"]
-[ext_resource type="PackedScene" uid="uid://ulc42eij556j" path="res://scenes_scripts/ui_foreground.tscn" id="8_fc2fl"]
-[ext_resource type="PackedScene" uid="uid://clgx4aqsks4fq" path="res://scenes_scripts/wind_sprite.tscn" id="8_yu60x"]
+[ext_resource type="Texture2D" uid="uid://cpn4chu647sc0" path="res://icon.svg" id="7_8hjc0"]
+[ext_resource type="PackedScene" path="res://scenes_scripts/ui_foreground.tscn" id="8_fc2fl"]
+[ext_resource type="PackedScene" path="res://scenes_scripts/wind_sprite.tscn" id="8_yu60x"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lnwij"]
 size = Vector2(45, 615)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_h4aj0"]
 size = Vector2(615, 45)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fqyug"]
+size = Vector2(1000, 1000)
 
 [sub_resource type="Curve" id="Curve_ihapv"]
 _data = [Vector2(0, 0.296703), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
@@ -111,6 +114,12 @@ wait_time = 0.2
 one_shot = true
 autostart = true
 
+[node name="Clickable" type="Area2D" parent="Main2D"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Main2D/Clickable"]
+position = Vector2(271, 252)
+shape = SubResource("RectangleShape2D_fqyug")
+
 [node name="DEBUG_mouseclick" type="Sprite2D" parent="."]
 visible = false
 self_modulate = Color(1, 0, 0, 1)
@@ -131,6 +140,7 @@ position = Vector2(64, 66)
 z_index = 500
 
 [connection signal="timeout" from="Main2D/InitialLoadTimer" to="Main2D" method="_on_initial_load_timer_timeout"]
+[connection signal="input_event" from="Main2D/Clickable" to="Main2D" method="_on_clickable_input_event"]
 
 [editable path="UI_bkgd"]
 [editable path="UI_foreground"]

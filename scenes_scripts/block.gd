@@ -39,6 +39,7 @@ func _process(_delta)-> void:
 		selected_sprite.visible = is_selected
 	if is_selected:
 		selected_sprite.self_modulate = Color.WHITE if is_dragging else Color(255,255,255,0.5)
+	
 
 func _physics_process(_delta):
 	if is_selected:
@@ -96,7 +97,6 @@ func end_drag(is_touch:bool=false):
 	set_row_col_from_pos()
 	snap_to_position_from_row_col()
 	
-	print(prev_pos, grid_pos)
 	just_deselected.emit(self, prev_pos, grid_pos)
 
 func get_drag():
@@ -155,8 +155,6 @@ func _on_clickable_input_event(_viewport: Node, event: InputEvent, _shape_idx: i
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if event.is_pressed():
 				start_drag()
-			else:
-				end_drag()
 	#elif event is InputEventScreenDrag:
 		#if event.get_pressure() < 0.1:
 			#end_drag()

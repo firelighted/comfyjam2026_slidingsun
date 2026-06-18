@@ -57,7 +57,6 @@ var block_num: int = 0
 var moves_this_level: int = 0
 
 var selected_block: Node
-var is_dragging = false
 
 
 ###
@@ -107,8 +106,6 @@ func receive_block_want_to_move(block_id, grid_pos, dir):
 	pass #print("block want to move")
 
 func receive_block_just_selected(block: Block, block_id, grid_pos):
-	print('receive_block_just_selected')
-	
 	if is_instance_valid(selected_block):
 		# if a block is already selected, do nothing
 		if block.block_id == selected_block.block_id:
@@ -124,8 +121,8 @@ func receive_block_just_deselected(
 ):
 	update_array(prev_pos, new_pos, block.dims, block.block_id)
 	check_breaker_tiles()
-	print(array)
 	check_for_win()
+	selected_block = null
 
 func _on_next_level_button_pressed() -> void:
 	if current_level < len(levels):
@@ -139,6 +136,19 @@ func _on_reset_level_button_pressed() -> void:
 
 func _on_initial_load_timer_timeout() -> void:
 	pass #_ready()#load_level(0)
+
+
+###
+### EVENTS
+###
+
+func _on_clickable_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			if !event.is_pressed():
+				if is_instance_valid(selected_block):
+					selected_block.end_drag()
+
 
 ###
 ### CUSTOM METHODS
