@@ -1,11 +1,12 @@
 extends Node2D
 
 
-
+@export var is_moving: bool = false
 @export var anim_player_path: NodePath = "AnimationPlayer"
 var anim_player: AnimationPlayer
 
 var is_open = true
+
 
 func _ready():
 	anim_player = get_node(anim_player_path)
@@ -21,7 +22,10 @@ func _ready():
 
 	
 func change_state(new_state_is_open):
+	if is_moving: # can't double-click
+		return
 	if is_open != new_state_is_open:
+		is_moving = true
 		is_open = new_state_is_open
 		if new_state_is_open:
 			anim_player.play("open")

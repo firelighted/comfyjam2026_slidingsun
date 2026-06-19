@@ -159,6 +159,10 @@ flat = true
 stream = ExtResource("12_7fj5o")
 parameters/looping = true
 
+[node name="BkgdMusicRestartTimer" type="Timer" parent="BkgdMusicPlayer"]
+wait_time = 122.0
+autostart = true
+
 [node name="SFXPlayer" type="AudioStreamPlayer2D" parent="."]
 
 [node name="SFXPlayer2" type="AudioStreamPlayer2D" parent="."]
@@ -166,6 +170,7 @@ parameters/looping = true
 [connection signal="timeout" from="Main2D/InitialLoadTimer" to="Main2D" method="_on_initial_load_timer_timeout"]
 [connection signal="input_event" from="Main2D/Clickable" to="Main2D" method="_on_clickable_input_event"]
 [connection signal="toggled" from="SoundToggleCheckButton" to="Main2D" method="_on_sound_toggle_check_button_toggled"]
+[connection signal="timeout" from="BkgdMusicPlayer/BkgdMusicRestartTimer" to="Main2D" method="_on_bkgd_music_restart_timer_timeout"]
 
 [editable path="UI_bkgd"]
 [editable path="UI_foreground"]

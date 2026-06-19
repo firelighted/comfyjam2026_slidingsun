@@ -71,7 +71,12 @@ func set_variables(new_block_id, width: int, height: int, row: int, col: int):
 	$Clickable/base_texture.self_modulate = Color(
 		Constants.THEME_COLORS[block_id  % len(Constants.THEME_COLORS)]
 	)
-	$Label.text = str(block_id)
+	$Label.text = str(block_id) if block_id else ""
+	$Clickable/shadow.visible = bool(block_id)
+	$Clickable/base_texture.visible = bool(block_id)
+	$Clickable/special_texture_border.visible = not bool(block_id)
+	
+		
 	position = Vector2(row + 0.5 * width, col + 0.5 * height) * Constants.PIXELS_PER_UNIT  
 	$Clickable.scale = Vector2(width, height)
 	$CollisionShape2D.scale = Vector2(width, height)

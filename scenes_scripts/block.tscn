@@ -126,7 +126,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Clickable/shadow:scale")
+tracks/1/path = NodePath("Clickable/base_texture:scale")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -233,6 +233,11 @@ z_index = 100
 scale = Vector2(0.9, 0.9)
 texture = ExtResource("3_lgxio")
 
+[node name="special_texture_border" type="Sprite2D" parent="Clickable"]
+z_index = 100
+scale = Vector2(0.9, 0.9)
+texture = ExtResource("3_lgxio")
+
 [node name="special_texture" type="Sprite2D" parent="."]
 z_index = 100
 region_rect = Rect2(45, 45, 405, 405)
@@ -281,6 +286,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="DEBUG_array_idxs" type="Label" parent="."]
+visible = false
 z_index = 110
 offset_left = -20.0
 offset_top = 38.0

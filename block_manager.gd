@@ -26,7 +26,7 @@ extends Node2D
 	]
 ]
 
-const breaker_tiles_level_0 : Array[Vector2] = [Vector2(2, 3), Vector2(3, 3)]
+const breaker_tiles_level_0 : Array[Vector2] = []
 const breaker_tiles_level_1 : Array[Vector2] = [Vector2(0, 3), Vector2(1, 3)]
 const breaker_tiles_level_2 : Array[Vector2] = [Vector2(3, 0), Vector2(2,0)]
 # locations for wind breaker tiles in each level
@@ -96,9 +96,7 @@ func _ready() -> void:
 	$"../UI_foreground/HBoxContainer/ResetLevelButton".pressed.connect(_on_reset_level_button_pressed)
 	$"../UI_foreground/Won_Level_UI/Button".pressed.connect(_on_next_level_button_pressed)
 	
-	audio_bkgd_music.stream_paused = !sfx_toggle.pressed
-	if sfx_toggle.button_pressed: 
-		audio_bkgd_music.play()
+	_on_bkgd_music_restart_timer_timeout()
 		
 	current_level = 0
 	load_level(current_level)
@@ -545,3 +543,9 @@ func _on_sound_toggle_check_button_toggled(toggled_on: bool) -> void:
 	else:
 		audio_bkgd_music.stop()
 		
+
+
+func _on_bkgd_music_restart_timer_timeout() -> void:
+	audio_bkgd_music.stream_paused = !sfx_toggle.pressed
+	if sfx_toggle.button_pressed: 
+		audio_bkgd_music.play()
