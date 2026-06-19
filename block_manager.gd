@@ -499,25 +499,33 @@ func _find_lowest_unoccupied_id() -> int:
 	for block in blocks:
 		ids_present.push_back(block.block_id)
 	
-	var i = 0
-	while i in ids_present:
+	var i = -1
+	while i == -1 or i in ids_present:
 		i += 1
 	
 	return i
 
 ### breaks a block down into smaller blocks
 ### breaker_tiles will all be nonempty and occupied by the same block
+### some limitations: logic can't deal with breaking a 2x2 tile with a 2x1 breaker
+### breaker_tiles also needs to follow some rules: only 1xn, horizontal, 
+### and ordered by x value
 func _break_block(id: int) -> void:
-	var first_loop = true
+	var N = breaker_tiles.size()
 	
-	for tile in breaker_tiles:
+	for i in N:
+		var tile = breaker_tiles[i]
 		var id_at_tile = get_array(tile.x, tile.y)
-		var b = get_block(id_at_tile)
+		var b: Block = get_block(id_at_tile)
 		
-		# first loop: take the original block and change it to 1x1
-		if first_loop:
-			first_loop = false
-			b.set_variables(id_at_tile, 1, 1, tile.x, tile.y)
+		# first loop: take the original block and change it to 1xn
+		if i == 0:
+			# if the tile is to the left of the breaking tile, then
+			# its width should be increased to match
+			# the corresponding case for on the right isn't dealt with (but should be)
+			var x_offset = max(tile.x - b.grid_pos.x, 0)
+
+			b.set_variables(id_at_tile, 1 + x_offset, 1, tile.x - x_offset, tile.y)
 		else: # second loop: create new blocks and add them to the level
 			var new_id = _find_lowest_unoccupied_id()
 			set_array(new_id, tile.x, tile.y)
