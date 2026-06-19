@@ -74,7 +74,7 @@ const breaker_tiles_level_3 : Array[Vector2] = [Vector2(0, 2), Vector2(0, 3)]
 const breaker_tiles_level_4 : Array[Vector2] = [Vector2(0, 0), Vector2(1,0)]
 const breaker_tiles_level_5 : Array[Vector2] = [Vector2(1, 0), Vector2(2,0)]
 const breaker_tiles_level_6 : Array[Vector2] = [Vector2(2, 3), Vector2(3,3)]
-#const breaker_tiles_level_7 : Array[Vector2] = [Vector2(1, 0), Vector2(2,0)]
+const breaker_tiles_level_7 : Array[Vector2] = [Vector2(1, 0), Vector2(2,0)]
 # locations for wind breaker tiles in each level
 var breaker_tiles_levels = [
 	breaker_tiles_level_0,
@@ -84,7 +84,7 @@ var breaker_tiles_levels = [
 	breaker_tiles_level_4,
 	breaker_tiles_level_5,
 	breaker_tiles_level_6,
-	#breaker_tiles_level_7
+	breaker_tiles_level_7
 ]
 var level_move_counts : Array[int] = []
 var current_level = 0
@@ -212,7 +212,7 @@ func play_sound(audio_clip, priority=false):
 
 func _on_next_level_button_pressed() -> void:
 	if current_level < len(levels):
-		load_level(current_level + 1, true)
+		load_level((current_level + 1) % len(levels), true)
 	
 
 func _on_reset_level_button_pressed() -> void:
@@ -265,11 +265,11 @@ func check_for_win():
 		update_level_move_counts_ui()
 		print("win")
 		play_sound(won_sound)
-		if current_level < len(levels) -1:
-			won_level_ui.visible = true
-		else:
-			won_game_ui.visible = true
-			
+		for l in level_move_counts:
+			if not l: # an incomplete level still with score 0
+				won_level_ui.visible = true
+				return
+		won_game_ui.visible = true
 
 func load_level(level_idx:int, add_to_total: bool=false):
 	level_button_parent.get_child(current_level).self_modulate = Color.WHITE
