@@ -72,6 +72,7 @@ func set_variables(new_block_id, width: int, height: int, row: int, col: int):
 		Constants.THEME_CLOUD_COLORS[block_id  % len(Constants.THEME_CLOUD_COLORS)]
 	)
 	block_color.v = 0.95
+	block_color = block_color.lightened(.5)
 	var unique_mat = $Clickable/base_texture.material.duplicate()
 	unique_mat.set("shader_parameter/inner_color",block_color)
 	$Clickable/base_texture.material = unique_mat

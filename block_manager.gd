@@ -6,34 +6,62 @@ extends Node2D
 @export var game_moves_counter_label_path: NodePath = "../UI_foreground/Won_Game_UI/VBoxContainer/Moves_This_Game_Label"
 @export var blocks : Array[Block]
 @export var levels : Array[Array] = [
-	[
+	[ # 0
 		2,2,3,3,
 		0,0,0,1,
 		5,6,7,1,
 		-1,-1,-1,9
 	],
-	[
+	[ # 1 
 		0,1,2,3,
 		5,5,4,4,
 		-1,-1,9,10,
 		-1,-1,9,10,
 	],
-	[
+	[ # 2
 		0,1,2,3,
 		4,4,5,5,
 		6,7,8,8,
 		-1,-1,9,10
-	]
+	],
+	[ # 3
+		0,1,2,3,
+		4,1,5,5,
+		4,7,8,8,
+		-1,-1,9,10
+	],
+	[ #4 
+		0,1,1,1,
+		5,5,4,4,
+		-1,2,9,10,
+		-1,3,9,10,
+	],
+	[ # 5
+		2,2,3,3,
+		0,0,1,1,
+		5,-1,-1,-1,
+		-1,6,6,6
+	],
 ]
 
-const breaker_tiles_level_0 : Array[Vector2] = []
+#const breaker_tiles_outside: Array[Vector2] =[
+	#Vector2(-1, 2), Vector2(-1, 3), 
+	#Vector2(0, -1), Vector2(1, -1),  
+	#Vector2(2, -1), Vector2(3, -1)]
+const breaker_tiles_level_0 : Array[Vector2] = [Vector2(1,0), Vector2(2,0)]
 const breaker_tiles_level_1 : Array[Vector2] = [Vector2(0, 3), Vector2(1, 3)]
 const breaker_tiles_level_2 : Array[Vector2] = [Vector2(3, 0), Vector2(2,0)]
+const breaker_tiles_level_3 : Array[Vector2] = [Vector2(0, 2), Vector2(0, 3)]
+const breaker_tiles_level_4 : Array[Vector2] = [Vector2(0, 0), Vector2(1,0)]
+const breaker_tiles_level_5 : Array[Vector2] = [Vector2(1, 0), Vector2(2,0)]
 # locations for wind breaker tiles in each level
 var breaker_tiles_levels = [
 	breaker_tiles_level_0,
 	breaker_tiles_level_1,
 	breaker_tiles_level_2,
+	breaker_tiles_level_3,
+	breaker_tiles_level_4,
+	breaker_tiles_level_5,
 ]
 var level_move_counts : Array[int] = []
 var current_level = 0
@@ -158,7 +186,7 @@ func play_sound(audio_clip, priority=false):
 
 func _on_next_level_button_pressed() -> void:
 	if current_level < len(levels):
-		load_level(current_level + 1)
+		load_level(current_level + 1, true)
 	
 
 func _on_reset_level_button_pressed() -> void:
@@ -202,17 +230,21 @@ func check_for_win():
 			won_game_ui.visible = true
 			
 
-func load_level(level_idx:int, add_to_total: bool=true):
+func load_level(level_idx:int, add_to_total: bool=false):
+	level_button_parent.get_child(current_level).self_modulate = Color.WHITE
 	# record move counts
 	if add_to_total:
 		level_move_counts[current_level] = moves_this_level
+		level_button_parent.get_child(current_level).get_child(0).text = str(moves_this_level) if moves_this_level else ""
 	current_level = level_idx
 	if level_idx < len(levels):
 		array = levels[level_idx].duplicate(true)
 		x_size = 4
 		y_size = 4
 		breaker_tiles = breaker_tiles_levels[level_idx].duplicate(true)
+		#breaker_tiles.append_array(breaker_tiles_outside)
 		cells = x_size * y_size
+		level_button_parent.get_child(level_idx).self_modulate = Constants.THEME_COLORS[3]
 	else:
 		push_warning("Using default level, no valid current_level in levels array")
 		push_warning("level_idx=" + str(level_idx))
@@ -482,25 +514,15 @@ func max_legal_distance(block: Block, axis: String, direction: int) -> int:
 
 ### will check wether a block is fully on top of the special "breaker" tiles
 func check_breaker_tiles():
-	var id = Constants.EMPTY
-	var should_break_block = true
+	var last_tile_id = Constants.EMPTY # id of last block in breaker tile space
 	
 	for tile in breaker_tiles:
-		var id_at_tile = get_array(tile.x, tile.y)
+		var current_tile_id = get_array(tile.x, tile.y)
 		
-		if id_at_tile == Constants.EMPTY:
-			should_break_block = false
+		if last_tile_id == current_tile_id:  # any consecutive tiles can match
+			_break_block(current_tile_id)
 			break
-		else:
-			if id != id_at_tile:
-				if id == Constants.EMPTY:
-					id = id_at_tile
-				else:
-					should_break_block = false
-					break
-	
-	if should_break_block:
-		_break_block(id)
+		last_tile_id = current_tile_id
 
 ### finds the lowest id number that's not being used by a block
 func _find_lowest_unoccupied_id() -> int:
@@ -520,27 +542,64 @@ func _find_lowest_unoccupied_id() -> int:
 ### breaker_tiles also needs to follow some rules: only 1xn, horizontal, 
 ### and ordered by x value
 func _break_block(id: int) -> void:
-	var N = breaker_tiles.size()
+	print("_break_block " + str(id))
+	print(array)
+	var is_first_block = true
+	var block_dims_x = 1
+	var block_dims_y = 1
+	var is_long_in_x = true
+	var x_offset
+	var y_offset
+	var breaker_tiles_involved = []
 	
-	for i in N:
-		var tile = breaker_tiles[i]
+	for tile in breaker_tiles:
 		var id_at_tile = get_array(tile.x, tile.y)
 		var b: Block = get_block(id_at_tile)
-		
+		if id_at_tile == id and b:
+			breaker_tiles_involved.append(tile)
+	breaker_tiles_involved.sort()
+	for tile in breaker_tiles_involved:
+		var b: Block = get_block(id)
 		# first loop: take the original block and change it to 1xn
-		if i == 0:
+		if is_first_block:
+			block_dims_x = b.dims.x
+			block_dims_y = b.dims.y
+			is_long_in_x = (block_dims_x > block_dims_y)
+			
+			if block_dims_x == 1 and block_dims_y == 1:
+				continue
+				
 			# if the tile is to the left of the breaking tile, then
 			# its width should be increased to match
 			# the corresponding case for on the right isn't dealt with (but should be)
-			var x_offset = max(tile.x - b.grid_pos.x, 0)
-
-			b.set_variables(id_at_tile, 1 + x_offset, 1, tile.x - x_offset, tile.y)
+			x_offset = max(tile.x - b.grid_pos.x, 0)
+			y_offset = max(tile.y - b.grid_pos.y, 0)
+			# id, width, height, row, col
+			b.set_variables(id, 
+				1, 1, 
+				tile.x, tile.y)
+			
+			is_first_block = false
 		else: # second loop: create new blocks and add them to the level
 			var new_id = _find_lowest_unoccupied_id()
-			set_array(new_id, tile.x, tile.y)
-			blocks.push_back(_create_block(new_id, tile.x, tile.y))
+			var new_block = _create_block(new_id, tile.x, tile.y)
+			var new_x = tile.x - x_offset
+			var new_y = tile.y - y_offset
+			var new_dims_x = block_dims_x - 1 if is_long_in_x else 1
+			var new_dims_y = block_dims_y - 1 if not is_long_in_x else 1
+			blocks.push_back(new_block)
+			new_block.set_variables(new_id, new_dims_x, new_dims_y, new_x, new_y)
+			set_array(new_id, new_x, new_y)
+			if new_dims_x > 1:
+				for i in range(new_dims_x):
+					set_array(new_id, new_x + i, new_y)
+			if new_dims_y > 1:
+				for i in range(new_dims_y):
+					set_array(new_id, new_x, new_y + i)
+			
 			b.show_break()  # particles
 			play_sound(break_block_sound, true)
+			break
 		
 
 

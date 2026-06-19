@@ -1,9 +1,23 @@
-[gd_scene load_steps=2 format=3 uid="uid://ciu533jcic12p"]
+[gd_scene load_steps=4 format=3 uid="uid://ciu533jcic12p"]
 
+[ext_resource type="Theme" uid="uid://dqbku2qxufg7j" path="res://theme/main_theme.tres" id="1_rmye6"]
 [ext_resource type="Script" path="res://scenes_scripts/sibling_button.gd" id="1_th2g8"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_5hc8v"]
+font_size = 26
+
 [node name="LevelButton" type="Button"]
-text = "0"
+focus_mode = 0
+theme = ExtResource("1_rmye6")
+text = " 0 "
 script = ExtResource("1_th2g8")
+
+[node name="MoveCountLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 43.0
+offset_top = 3.0
+offset_right = 83.0
+offset_bottom = 45.0
+label_settings = SubResource("LabelSettings_5hc8v")
 
 [connection signal="pressed" from="." to="." method="_on_pressed"]

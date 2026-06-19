@@ -6,7 +6,7 @@
 [ext_resource type="LabelSettings" uid="uid://b4qx5deogc1w8" path="res://theme/DEBUG_labelsetting.tres" id="4_4gpkc"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ivpb4"]
-font_size = 20
+font_size = 15
 font_color = Color(0, 0, 0, 1)
 
 [node name="UI_bkgd" type="Control"]
@@ -43,10 +43,11 @@ texture = ExtResource("3_vxtcr")
 [node name="Label" type="Label" parent="."]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 586.0
+offset_top = 584.0
 offset_right = 632.0
-offset_bottom = 663.0
-text = "Click and drag to get the sun to the lower right corner"
+offset_bottom = 661.0
+text = "Pull the sun over to set in the lower right corner. 
+And leave my darn umbrellas alone."
 label_settings = SubResource("LabelSettings_ivpb4")
 horizontal_alignment = 1
 autowrap_mode = 3
