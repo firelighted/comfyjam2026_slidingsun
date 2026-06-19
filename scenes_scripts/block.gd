@@ -68,9 +68,10 @@ func set_variables(new_block_id, width: int, height: int, row: int, col: int):
 	self.dims.y = height
 	self.grid_pos.x = row
 	self.grid_pos.y = col
+	
 	var block_color : Color = Color(
 		Constants.THEME_CLOUD_COLORS[block_id  % len(Constants.THEME_CLOUD_COLORS)]
-	)
+	) if block_id else Color.WHITE
 	block_color.v = 0.95
 	block_color = block_color.lightened(.5)
 	var unique_mat = $Clickable/base_texture.material.duplicate()

@@ -46,8 +46,8 @@ offset_left = 8.0
 offset_top = 584.0
 offset_right = 632.0
 offset_bottom = 661.0
-text = "Pull the sun over to set in the lower right corner. 
-And leave my darn umbrellas alone."
+text = "Pull the sun over to the perfect sunbathing location in the lower right corner. 
+And leave the darn umbrellas alone. "
 label_settings = SubResource("LabelSettings_ivpb4")
 horizontal_alignment = 1
 autowrap_mode = 3

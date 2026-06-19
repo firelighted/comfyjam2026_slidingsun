@@ -4,13 +4,18 @@
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gmim1"]
 bg_color = Color(0.329412, 0.603922, 0.552941, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0.329412, 0.603922, 0.552941, 1)
 corner_radius_top_left = 15
 corner_radius_top_right = 15
 corner_radius_bottom_right = 15
 corner_radius_bottom_left = 15
 
 [resource]
-default_font_size = 30
+default_font_size = 25
 Button/styles/hover = ExtResource("1_u5jj7")
 Button/styles/normal = SubResource("StyleBoxFlat_gmim1")
 Button/styles/pressed = ExtResource("1_u5jj7")

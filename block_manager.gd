@@ -6,10 +6,45 @@ extends Node2D
 @export var game_moves_counter_label_path: NodePath = "../UI_foreground/Won_Game_UI/VBoxContainer/Moves_This_Game_Label"
 @export var sfx_toggle_path : NodePath = "../Settings/SoundToggleCheckButton"
 @export var bkgd_toggle_path : NodePath = "../Settings/BkgdToggleCheckButton"
+@export var reset_level_button_path : NodePath = "../UI_foreground/HBoxContainer/ResetLevelButton"
+@export var next_level_button_path : NodePath = "../UI_foreground/Won_Level_UI/VBoxContainer/WonLevelButton"
+@export var level_move_label_path : NodePath = "../UI_foreground/HBoxContainer/MoveCounterLabel2"
+@export var total_move_label_path : NodePath = "../UI_foreground/HBoxContainer/TotalMoveCounterLabel"
+@export var levels_complete_label_path : NodePath = "../UI_foreground/Won_Level_UI/VBoxContainer/LevelProgressLabel"
 
 @export var blocks : Array[Block]
 
 @export var levels : Array[Array] = [
+	[ # -5
+		0,-1,4,-1,
+		1,-1,-1,-1,
+		1,-1,2,-1,
+		1,-1,3,-1,
+	],	
+	[ # -4
+		0,-1,4,-1,
+		1,5,4,-1,
+		1,-1,2,-1,
+		1,-1,3,-1,
+	],	
+	[ # -3
+		0,5,4,-1,
+		1,1,1,-1,
+		6,-1,2,-1,
+		7,-1,3,-1,
+	],	
+	[ # -2
+		0,2,5,5,
+		4,4,3,-1,
+		1,-1,3,-1,
+		1,-1,3,-1,
+	],
+	[ # -1
+		0,2,3,-1,
+		0,2,-1,-1,
+		-1,-1,7,8,
+		-1,-1,7,9
+	],
 	[ # 0
 		2,2,3,3,
 		0,0,0,1,
@@ -27,6 +62,12 @@ extends Node2D
 		4,4,5,5,
 		6,7,8,8,
 		-1,-1,9,10
+	],
+	[ #7
+		-1, -1, -1, -1,
+		-1, 1, 1, 1,
+		-1, 0, 0, 0,
+		2, 2, 2, -1,
 	],
 	[ # 3
 		0,1,2,3,
@@ -52,12 +93,6 @@ extends Node2D
 		5,6,7,1,
 		-1,-1,-1,9
 	],
-	[ #7
-		-1, -1, -1, -1,
-		-1, 1, 1, 1,
-		-1, 0, 0, 0,
-		2, 2, 2, -1,
-	],
 	#[
 		#-1, -1, -1, -1,
 		#-1, -1, -1, -1,
@@ -67,6 +102,11 @@ extends Node2D
 ]
 
 
+const breaker_tiles_level_neg5 : Array[Vector2] = []
+const breaker_tiles_level_neg4 : Array[Vector2] = []
+const breaker_tiles_level_neg3 : Array[Vector2] = []
+const breaker_tiles_level_neg2 : Array[Vector2] = []
+const breaker_tiles_level_neg1 : Array[Vector2] = []
 const breaker_tiles_level_0 : Array[Vector2] = [Vector2(1,0), Vector2(2,0)]
 const breaker_tiles_level_1 : Array[Vector2] = [Vector2(0, 3), Vector2(1, 3)]
 const breaker_tiles_level_2 : Array[Vector2] = [Vector2(2, 0), Vector2(3,0)]
@@ -77,14 +117,19 @@ const breaker_tiles_level_6 : Array[Vector2] = [Vector2(2, 3), Vector2(3,3)]
 const breaker_tiles_level_7 : Array[Vector2] = [Vector2(1, 0), Vector2(2,0)]
 # locations for wind breaker tiles in each level
 var breaker_tiles_levels = [
+	breaker_tiles_level_neg5,
+	breaker_tiles_level_neg4,
+	breaker_tiles_level_neg3,
+	breaker_tiles_level_neg2,
+	breaker_tiles_level_neg1,
 	breaker_tiles_level_0,
 	breaker_tiles_level_1,
 	breaker_tiles_level_2,
+	breaker_tiles_level_7,
 	breaker_tiles_level_3,
 	breaker_tiles_level_4,
 	breaker_tiles_level_5,
 	breaker_tiles_level_6,
-	breaker_tiles_level_7
 ]
 var level_move_counts : Array[int] = []
 var current_level = 0
@@ -148,8 +193,8 @@ func _ready() -> void:
 	won_level_ui.visible = false
 	won_game_ui.visible = false
 	moves_this_level = 0
-	$"../UI_foreground/HBoxContainer/ResetLevelButton".pressed.connect(_on_reset_level_button_pressed)
-	$"../UI_foreground/Won_Level_UI/WonLevelButton".pressed.connect(_on_next_level_button_pressed)
+	get_node(reset_level_button_path).pressed.connect(_on_reset_level_button_pressed)
+	get_node(next_level_button_path).pressed.connect(_on_next_level_button_pressed)
 	
 	_on_bkgd_music_restart_timer_timeout()
 		
@@ -244,18 +289,23 @@ func update_level_move_counts_ui():
 	
 	var moves_this_game = 0
 	var idx = 0
+	var levels_complete = 0
 	# Tally up moves in other levels 
 	for level_moves in level_move_counts:
 		if idx != current_level: # only other levels
 			moves_this_game += level_moves
+		if level_moves:
+			levels_complete += 1
 		idx += 1
 	# Add moves so far this level
 	moves_this_game += moves_this_level
 	for l in range(len(levels)):
 		level_button_parent.get_child(l).get_child(0).text = str(level_move_counts[l]) if level_move_counts[l] else ""
-	$"../UI_foreground/HBoxContainer/MoveCounterLabel2".text = str(moves_this_level)
-	$"../UI_foreground/HBoxContainer/TotalMoveCounterLabel".text = str(moves_this_game) + " Total Moves"
-	game_moves_counter_label.text = str(moves_this_game) + " TOTAL MOVES"
+
+	get_node(level_move_label_path).text = "Moves: " + str(moves_this_level) if moves_this_level < 1000 else str(moves_this_level)
+	get_node(total_move_label_path).text = "Total Moves: " + str(moves_this_game) if moves_this_game < 10000 else str(moves_this_game)
+	get_node(levels_complete_label_path).text = str(levels_complete) + "/" + str(len(levels)) + " Levels Completed!"
+	game_moves_counter_label.text = "Total Moves: " + str(moves_this_game)
 
 func check_for_win():
 	if array[WIN_ARRAY_IDX] == SUN_TILE_IDX:
@@ -291,6 +341,7 @@ func load_level(level_idx:int, add_to_total: bool=false):
 		var level_text = "levels=\n"
 		for l in levels:
 			level_text += str(l) + "      \n"
+		push_warning(level_text)
 		push_warning(levels)
 	init_array()
 	spawn_blocks()

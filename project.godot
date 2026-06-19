@@ -10,7 +10,8 @@ config_version=5
 
 [application]
 
-config/name="Sliding Sun"
+config/name="Cloud Nine"
+config/description="Slide the clouds around. The umbrellas are clearly irrelevant. Leave 'em alone. No particular reason."
 run/main_scene="res://scenes_scripts/main_2d.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://images/tiles/sun_white.png"

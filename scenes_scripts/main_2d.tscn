@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://b68t311mpj4pr"]
+[gd_scene load_steps=17 format=3 uid="uid://b68t311mpj4pr"]
 
 [ext_resource type="Script" path="res://block_manager.gd" id="1_5ua2j"]
 [ext_resource type="PackedScene" uid="uid://be06sc2byqitp" path="res://scenes_scripts/ui_bkgd.tscn" id="1_ueq1k"]
@@ -11,7 +11,6 @@
 [ext_resource type="Texture2D" uid="uid://cihbuf5w5dxhy" path="res://icon.svg" id="7_8hjc0"]
 [ext_resource type="PackedScene" uid="uid://ulc42eij556j" path="res://scenes_scripts/ui_foreground.tscn" id="8_fc2fl"]
 [ext_resource type="PackedScene" uid="uid://clgx4aqsks4fq" path="res://scenes_scripts/wind_sprite.tscn" id="8_yu60x"]
-[ext_resource type="Texture2D" uid="uid://b85smg7sqfd8o" path="res://images/icons/sound_icon.png" id="10_2rmo8"]
 [ext_resource type="AudioStream" uid="uid://dd0ubclm2hp7h" path="res://audio/Blippy Trance.mp3" id="12_7fj5o"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lnwij"]
@@ -39,11 +38,11 @@ limit_right = 640
 limit_bottom = 640
 
 [node name="Main2D" type="Node2D" parent="."]
-position = Vector2(64, 66)
+position = Vector2(66, 66)
 script = ExtResource("1_5ua2j")
 
 [node name="valid_tile_area_bkgd" type="Sprite2D" parent="Main2D"]
-self_modulate = Color(1, 1, 1, 0.572549)
+self_modulate = Color(1, 1, 1, 0.313726)
 position = Vector2(0, 1.43051e-06)
 scale = Vector2(4, 4)
 texture = ExtResource("3_oqrwf")
@@ -59,11 +58,11 @@ centered = false
 [node name="Decoration" type="Node2D" parent="Main2D"]
 
 [node name="Towel2" parent="Main2D/Decoration" instance=ExtResource("5_yf03h")]
-position = Vector2(520, 502)
+position = Vector2(528, 446)
 rotation = -0.261799
 
 [node name="Towel3" parent="Main2D/Decoration" instance=ExtResource("5_yf03h")]
-position = Vector2(-16, 166)
+position = Vector2(80, 134)
 rotation = 2.87979
 
 [node name="Towel4" parent="Main2D/Decoration" instance=ExtResource("5_yf03h")]
@@ -168,7 +167,7 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -80.0
+offset_left = -105.0
 offset_top = -84.0
 grow_horizontal = 0
 grow_vertical = 0
@@ -176,14 +175,12 @@ grow_vertical = 0
 [node name="SoundToggleCheckButton" type="CheckButton" parent="Settings"]
 layout_mode = 2
 button_pressed = true
-text = "SFX"
-icon = ExtResource("10_2rmo8")
+text = "Sounds"
 flat = true
 
 [node name="BkgdToggleCheckButton" type="CheckButton" parent="Settings"]
 layout_mode = 2
 text = "Music"
-icon = ExtResource("10_2rmo8")
 flat = true
 
 [connection signal="timeout" from="Main2D/InitialLoadTimer" to="Main2D" method="_on_initial_load_timer_timeout"]

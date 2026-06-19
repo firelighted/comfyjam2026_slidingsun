@@ -4,20 +4,24 @@
 [ext_resource type="Script" path="res://scenes_scripts/sibling_button.gd" id="1_th2g8"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_5hc8v"]
-font_size = 26
+font_size = 23
+font_color = Color(0.2255, 0.41, 0.376175, 1)
 
 [node name="LevelButton" type="Button"]
+custom_minimum_size = Vector2(40, 0)
+offset_right = 40.0
+offset_bottom = 42.0
 focus_mode = 0
 theme = ExtResource("1_rmye6")
-text = " 0 "
+text = "00"
 script = ExtResource("1_th2g8")
 
 [node name="MoveCountLabel" type="Label" parent="."]
 layout_mode = 0
-offset_left = 43.0
-offset_top = 3.0
-offset_right = 83.0
-offset_bottom = 45.0
+offset_left = 47.0
+offset_right = 87.0
+offset_bottom = 42.0
+text = "00"
 label_settings = SubResource("LabelSettings_5hc8v")
 
 [connection signal="pressed" from="." to="." method="_on_pressed"]
