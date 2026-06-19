@@ -514,15 +514,25 @@ func max_legal_distance(block: Block, axis: String, direction: int) -> int:
 
 ### will check wether a block is fully on top of the special "breaker" tiles
 func check_breaker_tiles():
-	var last_tile_id = Constants.EMPTY # id of last block in breaker tile space
+	var id = Constants.EMPTY
+	var should_break_block = true
 	
 	for tile in breaker_tiles:
-		var current_tile_id = get_array(tile.x, tile.y)
+		var id_at_tile = get_array(tile.x, tile.y)
 		
-		if last_tile_id == current_tile_id:  # any consecutive tiles can match
-			_break_block(current_tile_id)
+		if id_at_tile == Constants.EMPTY:
+			should_break_block = false
 			break
-		last_tile_id = current_tile_id
+		else:
+			if id != id_at_tile:
+				if id == Constants.EMPTY:
+					id = id_at_tile
+				else:
+					should_break_block = false
+					break
+	
+	if should_break_block:
+		_break_block(id)
 
 ### finds the lowest id number that's not being used by a block
 func _find_lowest_unoccupied_id() -> int:
@@ -536,72 +546,35 @@ func _find_lowest_unoccupied_id() -> int:
 	
 	return i
 
+
 ### breaks a block down into smaller blocks
 ### breaker_tiles will all be nonempty and occupied by the same block
 ### some limitations: logic can't deal with breaking a 2x2 tile with a 2x1 breaker
 ### breaker_tiles also needs to follow some rules: only 1xn, horizontal, 
 ### and ordered by x value
 func _break_block(id: int) -> void:
-	print("_break_block " + str(id))
-	print(array)
-	var is_first_block = true
-	var block_dims_x = 1
-	var block_dims_y = 1
-	var is_long_in_x = true
-	var x_offset
-	var y_offset
-	var breaker_tiles_involved = []
+	var N = breaker_tiles.size()
 	
-	for tile in breaker_tiles:
+	for i in N:
+		var tile = breaker_tiles[i]
 		var id_at_tile = get_array(tile.x, tile.y)
 		var b: Block = get_block(id_at_tile)
-		if id_at_tile == id and b:
-			breaker_tiles_involved.append(tile)
-	breaker_tiles_involved.sort()
-	for tile in breaker_tiles_involved:
-		var b: Block = get_block(id)
+		
 		# first loop: take the original block and change it to 1xn
-		if is_first_block:
-			block_dims_x = b.dims.x
-			block_dims_y = b.dims.y
-			is_long_in_x = (block_dims_x > block_dims_y)
-			
-			if block_dims_x == 1 and block_dims_y == 1:
-				continue
-				
+		if i == 0:
 			# if the tile is to the left of the breaking tile, then
 			# its width should be increased to match
 			# the corresponding case for on the right isn't dealt with (but should be)
-			x_offset = max(tile.x - b.grid_pos.x, 0)
-			y_offset = max(tile.y - b.grid_pos.y, 0)
-			# id, width, height, row, col
-			b.set_variables(id, 
-				1, 1, 
-				tile.x, tile.y)
-			
-			is_first_block = false
+			var x_offset = max(tile.x - b.grid_pos.x, 0)
+
+			b.set_variables(id_at_tile, 1 + x_offset, 1, tile.x - x_offset, tile.y)
 		else: # second loop: create new blocks and add them to the level
 			var new_id = _find_lowest_unoccupied_id()
-			var new_block = _create_block(new_id, tile.x, tile.y)
-			var new_x = tile.x - x_offset
-			var new_y = tile.y - y_offset
-			var new_dims_x = block_dims_x - 1 if is_long_in_x else 1
-			var new_dims_y = block_dims_y - 1 if not is_long_in_x else 1
-			blocks.push_back(new_block)
-			new_block.set_variables(new_id, new_dims_x, new_dims_y, new_x, new_y)
-			set_array(new_id, new_x, new_y)
-			if new_dims_x > 1:
-				for i in range(new_dims_x):
-					set_array(new_id, new_x + i, new_y)
-			if new_dims_y > 1:
-				for i in range(new_dims_y):
-					set_array(new_id, new_x, new_y + i)
-			
+			set_array(new_id, tile.x, tile.y)
+			blocks.push_back(_create_block(new_id, tile.x, tile.y))
 			b.show_break()  # particles
 			play_sound(break_block_sound, true)
-			break
 		
-
 
 
 func _on_sound_toggle_check_button_toggled(toggled_on: bool) -> void:
