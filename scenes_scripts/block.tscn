@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://c1nqrhcqdwaqy"]
+[gd_scene load_steps=21 format=3 uid="uid://c1nqrhcqdwaqy"]
 
 [ext_resource type="Script" path="res://scenes_scripts/block.gd" id="1_o3usp"]
 [ext_resource type="Texture2D" uid="uid://qlwb5s0awuw0" path="res://images/tiles/base_tile_white.png" id="2_80yha"]
@@ -7,6 +7,7 @@
 [ext_resource type="Material" uid="uid://cofbxquoq86t6" path="res://shaders/cloud.tres" id="4_0n5gt"]
 [ext_resource type="Texture2D" uid="uid://cg14q0lo7puh1" path="res://images/palette.png" id="4_kqftf"]
 [ext_resource type="LabelSettings" uid="uid://b4qx5deogc1w8" path="res://theme/DEBUG_labelsetting.tres" id="5_280uh"]
+[ext_resource type="Texture2D" uid="uid://c341ig8p1on6e" path="res://images/tiles/squircle_50.png" id="5_qbuae"]
 [ext_resource type="Texture2D" uid="uid://dosvuaogf8qp4" path="res://images/tiles/cloud_particle.png" id="6_otir6"]
 [ext_resource type="Texture2D" uid="uid://bmvcfllposp7p" path="res://images/tiles/sun.png" id="8_48sej"]
 
@@ -201,6 +202,12 @@ material = ExtResource("4_0n5gt")
 texture = ExtResource("2_80yha")
 region_rect = Rect2(45, 45, 405, 405)
 
+[node name="Sprite2D" type="Sprite2D" parent="Clickable/base_texture"]
+visible = false
+self_modulate = Color(0.964706, 0.658824, 0.701961, 1)
+top_level = true
+texture = ExtResource("5_qbuae")
+
 [node name="selected_texture" type="Sprite2D" parent="Clickable"]
 z_index = 100
 scale = Vector2(0.9, 0.9)
@@ -237,6 +244,7 @@ scale_amount_min = 0.0
 color_ramp = SubResource("Gradient_dv0kw")
 
 [node name="Label" type="Label" parent="."]
+visible = false
 z_index = 110
 anchors_preset = 8
 anchor_left = 0.5

@@ -68,9 +68,15 @@ func set_variables(new_block_id, width: int, height: int, row: int, col: int):
 	self.dims.y = height
 	self.grid_pos.x = row
 	self.grid_pos.y = col
-	$Clickable/base_texture.self_modulate = Color(
-		Constants.THEME_COLORS[block_id  % len(Constants.THEME_COLORS)]
+	var block_color : Color = Color(
+		Constants.THEME_CLOUD_COLORS[block_id  % len(Constants.THEME_CLOUD_COLORS)]
 	)
+	block_color.v = 0.95
+	var unique_mat = $Clickable/base_texture.material.duplicate()
+	unique_mat.set("shader_parameter/inner_color",block_color)
+	$Clickable/base_texture.material = unique_mat
+	
+	
 	$Label.text = str(block_id) if block_id else ""
 	#$Clickable/shadow.visible = bool(block_id)
 	#$Clickable/base_texture.visible = bool(block_id)
