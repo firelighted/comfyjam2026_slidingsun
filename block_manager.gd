@@ -166,6 +166,7 @@ var block_num: int = 0
 var moves_this_level: int = 0
 
 var selected_block: Node
+var broke_all_clouds = false
 
 
 ###
@@ -305,27 +306,46 @@ func update_level_move_counts_ui():
 	get_node(level_move_label_path).text = "Moves: " + str(moves_this_level) if moves_this_level < 1000 else str(moves_this_level)
 	get_node(total_move_label_path).text = "Total Moves: " + str(moves_this_game) if moves_this_game < 10000 else str(moves_this_game)
 	get_node(levels_complete_label_path).text = str(levels_complete) + "/" + str(len(levels)) + " Levels Completed!"
-	game_moves_counter_label.text = "Total Moves: " + str(moves_this_game)
+	game_moves_counter_label.text = "Total Moves: " + str(moves_this_game) + " AND ALL CLOUDS BROKEN!" if broke_all_clouds else ""
+
+func win():
+	if current_level == len(level_move_counts):
+		level_move_counts.append(0)
+	level_move_counts[current_level] = moves_this_level
+	update_level_move_counts_ui()
+	print("win")
+	play_sound(won_sound, true)
+	for l in level_move_counts:
+		if not l: # an incomplete level still with score 0
+			won_level_ui.visible = true
+			return
+	won_game_ui.visible = true
 
 func check_for_win():
 	if array[WIN_ARRAY_IDX] == SUN_TILE_IDX:
-		if current_level == len(level_move_counts):
-			level_move_counts.append(0)
-		level_move_counts[current_level] = moves_this_level
-		update_level_move_counts_ui()
-		print("win")
-		play_sound(won_sound)
-		for l in level_move_counts:
-			if not l: # an incomplete level still with score 0
-				won_level_ui.visible = true
-				return
-		won_game_ui.visible = true
+		win()
+	if broke_all_clouds:
+		return # don't show win twice
+	# Zero out moves when all blocks unique
+	var unique_block_ids = []
+	for block_id in array:
+		if block_id != Constants.EMPTY:
+			if block_id in unique_block_ids:
+				return  # unbroken clouds exist
+			unique_block_ids.append(block_id)
+	# if all clouds unique/broken
+	moves_this_level = 0	
+	update_level_move_counts_ui()
+	play_sound(won_sound, true)
+	broke_all_clouds = true
+	level_button_parent.get_child(current_level).text = str(current_level) + "*"
 
 func load_level(level_idx:int, add_to_total: bool=false):
 	level_button_parent.get_child(current_level).self_modulate = Color.WHITE
 	# record move counts
 	if add_to_total:
 		level_move_counts[current_level] = moves_this_level
+	broke_all_clouds = false
 	current_level = level_idx
 	if level_idx < len(levels):
 		array = levels[level_idx].duplicate(true)
@@ -669,6 +689,7 @@ func _break_block(id: int) -> void:
 			play_sound(break_block_sound, true)
 	
 	print(array)
+	check_for_win()
 
 
 func _on_bkgd_music_restart_timer_timeout() -> void:
