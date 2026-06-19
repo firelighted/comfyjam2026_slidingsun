@@ -59,7 +59,7 @@ extends Node2D
 
 const breaker_tiles_level_0 : Array[Vector2] = [Vector2(1,0), Vector2(2,0)]
 const breaker_tiles_level_1 : Array[Vector2] = [Vector2(0, 3), Vector2(1, 3)]
-const breaker_tiles_level_2 : Array[Vector2] = [Vector2(3, 0), Vector2(2,0)]
+const breaker_tiles_level_2 : Array[Vector2] = [Vector2(2, 0), Vector2(3,0)]
 const breaker_tiles_level_3 : Array[Vector2] = [Vector2(0, 2), Vector2(0, 3)]
 const breaker_tiles_level_4 : Array[Vector2] = [Vector2(0, 0), Vector2(1,0)]
 const breaker_tiles_level_5 : Array[Vector2] = [Vector2(1, 0), Vector2(2,0)]
