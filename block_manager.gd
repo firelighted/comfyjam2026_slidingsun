@@ -41,6 +41,17 @@ var block_prefab: PackedScene = preload("res://scenes_scripts/block.tscn")
 var wind_prefab: PackedScene = preload("res://scenes_scripts/wind_sprite.tscn")
 @onready var block_parent = $BlockParent
 @onready var breaker_parent = $BreakerParent
+
+@onready var audio_sfx = $"../SFXPlayer"
+@onready var audio_sfx2 = $"../SFXPlayer2"
+@onready var audio_bkgd_music = $"../BkgdMusicPlayer"
+@onready var sfx_toggle = $"../SoundToggleCheckButton"
+@onready var selected_sound = preload("res://audio/deep_woo_desc.wav")
+@onready var deselected_sound = preload("res://audio/quick_boop.wav")
+@onready var break_block_sound = preload("res://audio/multiboop_convex.wav")
+@onready var won_sound = preload("res://audio/won_game_sfx.wav")
+
+
 var level_button_parent: Node
 var won_level_ui : Node
 var won_game_ui : Node
@@ -84,6 +95,11 @@ func _ready() -> void:
 	moves_this_level = 0
 	$"../UI_foreground/HBoxContainer/ResetLevelButton".pressed.connect(_on_reset_level_button_pressed)
 	$"../UI_foreground/Won_Level_UI/Button".pressed.connect(_on_next_level_button_pressed)
+	
+	audio_bkgd_music.stream_paused = !sfx_toggle.pressed
+	if sfx_toggle.button_pressed: 
+		audio_bkgd_music.play()
+		
 	current_level = 0
 	load_level(current_level)
 
@@ -115,6 +131,8 @@ func receive_block_just_selected(block: Block, block_id, grid_pos):
 		selected_block.end_drag()
 		
 	selected_block = block
+	play_sound(selected_sound)
+	
 
 func receive_block_just_deselected(
 	block: Block, prev_pos: Vector2, new_pos: Vector2
@@ -123,6 +141,21 @@ func receive_block_just_deselected(
 	check_breaker_tiles()
 	check_for_win()
 	selected_block = null
+	play_sound(deselected_sound)
+
+func play_sound(audio_clip, priority=false):
+	if priority:
+		audio_sfx.stop()
+		if audio_sfx2 and audio_clip and sfx_toggle.button_pressed:
+			audio_sfx2.stream = audio_clip
+			audio_sfx2.play()
+			return
+	
+		
+	if audio_sfx and audio_clip and sfx_toggle.button_pressed:
+		audio_sfx.stream = audio_clip
+		audio_sfx.play()
+	
 
 func _on_next_level_button_pressed() -> void:
 	if current_level < len(levels):
@@ -159,6 +192,7 @@ func check_for_win():
 		if current_level > -1 and current_level < len(level_move_counts):
 			level_move_counts[current_level] = moves_this_level
 		print("win")
+		play_sound(won_sound)
 		if current_level < len(levels) -1:
 			won_level_ui.visible = true
 		else:
@@ -222,13 +256,7 @@ func spawn_breaker_markers():
 		var wind = wind_prefab.instantiate()
 		snap_to_position_from_row_col(wind, tile)
 		breaker_parent.add_child(wind)
-		var wind_path = wind.get_path()
-		# random delay before animations start to prevent
-		# all wind from doing the same anim at the same exact time
-		await get_tree().create_timer(randf_range(0,2)).timeout
-		# protect against node being deleted before anim starts
-		if get_node_or_null(wind_path):
-			wind.get_child(0).play("idle")
+
 
 func snap_to_position_from_row_col(node_to_move: Node, grid_pos, dims_of_node = Vector2(1,1)):
 	var new_position = (grid_pos + 0.5 * dims_of_node) * Constants.PIXELS_PER_UNIT
@@ -494,5 +522,18 @@ func _break_block(id: int) -> void:
 			var new_id = _find_lowest_unoccupied_id()
 			set_array(new_id, tile.x, tile.y)
 			blocks.push_back(_create_block(new_id, tile.x, tile.y))
-			b.show_break()
+			b.show_break()  # particles
+			play_sound(break_block_sound, true)
+		
+
+
+
+func _on_sound_toggle_check_button_toggled(toggled_on: bool) -> void:
+	print("toggled " + str(toggled_on))
+	audio_bkgd_music.stream_paused = !toggled_on
+	audio_bkgd_music.volume_db = 0 if toggled_on else -100
+	if toggled_on:
+		audio_bkgd_music.play()
+	else:
+		audio_bkgd_music.stop()
 		

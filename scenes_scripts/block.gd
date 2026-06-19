@@ -13,6 +13,12 @@ signal just_deselected(
 @onready var label = $Label
 @onready var selected_sprite = $Clickable/selected_texture
 @onready var particles = $Particles
+@onready var audio = $AudioStreamPlayer2D
+
+#@onready var end_drag_sound = preload("res://audio/quick_low_woo.wav")
+#@onready var break_sound = preload("res://audio/quick_boop.wav")
+#if audio and end_drag_sound and Globals.settings_enable_sfx:
+		#audio.play(end_drag_sound)
 
 var block_id = -1
 var dims = Vector2(1, 1)
