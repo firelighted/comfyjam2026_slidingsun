@@ -659,7 +659,9 @@ func _find_lowest_unoccupied_id() -> int:
 func _break_block(id: int) -> void:
 	var N = breaker_tiles.size()
 	var original_width # width of the original block
+	var original_height # width of the original block
 	var x_offset # offset of the bottom-left corner of a block from the breaker tile
+	var y_offset # offset of the bottom-left corner of a block from the breaker tile
 	
 	for i in N:
 		var tile = breaker_tiles[i]
@@ -671,20 +673,32 @@ func _break_block(id: int) -> void:
 			# if the tile is to the left of the breaking tile, then
 			# its width should be increased to match
 			x_offset = max(tile.x - b.grid_pos.x, 0)
+			y_offset = max(tile.y - b.grid_pos.y, 0)
 			original_width = b.dims.x
-			b.set_variables(id_at_tile, 1 + x_offset, 1, tile.x - x_offset, tile.y)
+			original_height = b.dims.y
+			if original_width > 1:
+				b.set_variables(id_at_tile, 1 + x_offset, 1, tile.x - x_offset, tile.y)
+			else:
+				b.set_variables(id_at_tile, 1, 1 + y_offset, tile.x, tile.y - y_offset)
+				
 		else: # second loop: create new blocks and add them to the level
 			var new_id = _find_lowest_unoccupied_id()
 			set_array(new_id, tile.x, tile.y)
 			
 			# last iteration
 			if i == N - 1:
-				var extra = original_width - N - x_offset
+				var extra_x = original_width - N - x_offset
+				var extra_y = original_height - N - y_offset
 				
-				# if there are extra tiles to the right, then
+				# if there are extra_x tiles to the right, then
 				# update their ids in the level array
-				for j in extra:
-					set_array(new_id, tile.x + j + 1, tile.y)
+				if original_width > 1:
+					for j in extra_x:
+						set_array(new_id, tile.x + j + 1, tile.y)
+				else:
+					for j in extra_y:
+						set_array(new_id, tile.x, tile.y+ j + 1)
+					
 			
 			blocks.push_back(_create_block(new_id, tile.x, tile.y))
 			b.show_break()  # particles
