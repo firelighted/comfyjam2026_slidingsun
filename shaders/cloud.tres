@@ -1,4 +1,4 @@
-[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://cofbxquoq86t6"]
+[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://ty2wkul4bges"]
 
 [ext_resource type="Shader" path="res://shaders/cloud_tile.gdshader" id="1_lcmgq"]
 
