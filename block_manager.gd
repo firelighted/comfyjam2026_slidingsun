@@ -146,6 +146,7 @@ var umbrella_prefab: PackedScene = preload("res://scenes_scripts/umbrella.tscn")
 @onready var deselected_sound = preload("res://audio/quick_boop.wav")
 @onready var break_block_sound = preload("res://audio/multiboop_convex.wav")
 @onready var won_sound = preload("res://audio/won_game_sfx.wav")
+@onready var umbrella_change_sound = preload("res://audio/woosh3.wav")
 
 var sfx_toggle : Node
 var bkgd_toggle : Node
@@ -248,12 +249,14 @@ func play_sound(audio_clip, priority=false):
 		if audio_sfx2 and audio_clip and sfx_toggle.button_pressed:
 			audio_sfx2.stream = audio_clip
 			audio_sfx2.play()
+			print("play1")
 			return
 	
 		
 	if audio_sfx and audio_clip and sfx_toggle.button_pressed:
 		audio_sfx.stream = audio_clip
 		audio_sfx.play()
+		print("play2")
 	
 
 func _on_next_level_button_pressed() -> void:
@@ -728,5 +731,6 @@ func _on_bkgd_toggle_check_button_toggled(toggled_on: bool) -> void:
 
 var wind_tiles_current_level = 0
 func _on_swap_wind_umbrella_started_move() -> void:
+	play_sound(umbrella_change_sound)
 	wind_tiles_current_level = (wind_tiles_current_level + 1) % len(breaker_tiles_levels)
 	spawn_breaker_markers()
