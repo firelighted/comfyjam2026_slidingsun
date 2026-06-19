@@ -4,7 +4,11 @@ extends Node2D
 @export var won_level_ui_path: NodePath = "../UI_foreground/Won_Level_UI"
 @export var won_game_ui_path: NodePath = "../UI_foreground/Won_Game_UI"
 @export var game_moves_counter_label_path: NodePath = "../UI_foreground/Won_Game_UI/VBoxContainer/Moves_This_Game_Label"
+@export var sfx_toggle_path : NodePath = "../Settings/SoundToggleCheckButton"
+@export var bkgd_toggle_path : NodePath = "../Settings/BkgdToggleCheckButton"
+
 @export var blocks : Array[Block]
+
 @export var levels : Array[Array] = [
 	[ # 0
 		2,2,3,3,
@@ -42,17 +46,17 @@ extends Node2D
 		5,-1,-1,-1,
 		-1,6,6,6
 	],
-	[
+	[ #6
 		0,0,3,3,
 		2,2,2,1,
 		5,6,7,1,
 		-1,-1,-1,9
 	],
-	[
+	[ #7
 		-1, -1, -1, -1,
-		-1, -1, -1, -1,
+		-1, 1, 1, 1,
 		-1, 0, 0, 0,
-		-1, -1, -1, -1,
+		2, 2, 2, -1,
 	],
 ]
 
@@ -87,12 +91,13 @@ var umbrella_prefab: PackedScene = preload("res://scenes_scripts/umbrella.tscn")
 @onready var audio_sfx = $"../SFXPlayer"
 @onready var audio_sfx2 = $"../SFXPlayer2"
 @onready var audio_bkgd_music = $"../BkgdMusicPlayer"
-@onready var sfx_toggle = $"../SoundToggleCheckButton"
 @onready var selected_sound = preload("res://audio/deep_woo_desc.wav")
 @onready var deselected_sound = preload("res://audio/quick_boop.wav")
 @onready var break_block_sound = preload("res://audio/multiboop_convex.wav")
 @onready var won_sound = preload("res://audio/won_game_sfx.wav")
 
+var sfx_toggle : Node
+var bkgd_toggle : Node
 
 var level_button_parent: Node
 var won_level_ui : Node
@@ -118,6 +123,8 @@ var selected_block: Node
 
 func _ready() -> void:
 	
+	bkgd_toggle = get_node(bkgd_toggle_path)
+	sfx_toggle = get_node(sfx_toggle_path)
 	level_button_parent = get_node(level_button_parent_path)
 	won_level_ui = get_node(won_level_ui_path)
 	won_game_ui = get_node(won_game_ui_path)
@@ -136,7 +143,7 @@ func _ready() -> void:
 	won_game_ui.visible = false
 	moves_this_level = 0
 	$"../UI_foreground/HBoxContainer/ResetLevelButton".pressed.connect(_on_reset_level_button_pressed)
-	$"../UI_foreground/Won_Level_UI/Button".pressed.connect(_on_next_level_button_pressed)
+	$"../UI_foreground/Won_Level_UI/WonLevelButton".pressed.connect(_on_next_level_button_pressed)
 	
 	_on_bkgd_music_restart_timer_timeout()
 		
@@ -227,19 +234,34 @@ func _on_clickable_input_event(_viewport: Node, event: InputEvent, _shape_idx: i
 ### CUSTOM METHODS
 ###
 
+func update_level_move_counts_ui():	
+	
+	var moves_this_game = 0
+	var idx = 0
+	# Tally up moves in other levels 
+	for level_moves in level_move_counts:
+		if idx != current_level: # only other levels
+			moves_this_game += level_moves
+		idx += 1
+	# Add moves so far this level
+	moves_this_game += moves_this_level
+	for l in range(len(levels)):
+		level_button_parent.get_child(l).get_child(0).text = str(level_move_counts[l]) if level_move_counts[l] else ""
+	$"../UI_foreground/HBoxContainer/MoveCounterLabel2".text = str(moves_this_level)
+	$"../UI_foreground/HBoxContainer/TotalMoveCounterLabel".text = str(moves_this_game) + " Total Moves"
+	game_moves_counter_label.text = str(moves_this_game) + " TOTAL MOVES"
+
 func check_for_win():
 	if array[WIN_ARRAY_IDX] == SUN_TILE_IDX:
-		if current_level > -1 and current_level < len(level_move_counts):
-			level_move_counts[current_level] = moves_this_level
+		if current_level == len(level_move_counts):
+			level_move_counts.append(0)
+		level_move_counts[current_level] = moves_this_level
+		update_level_move_counts_ui()
 		print("win")
 		play_sound(won_sound)
 		if current_level < len(levels) -1:
 			won_level_ui.visible = true
 		else:
-			var moves_this_game = 0
-			for i in level_move_counts:
-				moves_this_game += i
-			game_moves_counter_label.text = str(moves_this_game) + " TOTAL MOVES"
 			won_game_ui.visible = true
 			
 
@@ -248,7 +270,6 @@ func load_level(level_idx:int, add_to_total: bool=false):
 	# record move counts
 	if add_to_total:
 		level_move_counts[current_level] = moves_this_level
-		level_button_parent.get_child(current_level).get_child(0).text = str(moves_this_level) if moves_this_level else ""
 	current_level = level_idx
 	if level_idx < len(levels):
 		array = levels[level_idx].duplicate(true)
@@ -414,16 +435,7 @@ func set_array(val: int, x: int, y: int) -> void:
 
 func increment_move_counters(increment=1):
 	moves_this_level += increment
-	var moves_this_game = 0
-	var idx = 0
-	# Tally up moves in other levels 
-	for level_moves in level_move_counts:
-		if idx != current_level: # only other levels
-			moves_this_game += level_moves
-		idx += 1
-	# Add moves so far this level
-	moves_this_game += moves_this_level
-	$"../UI_foreground/HBoxContainer/MoveCounterLabel".text = str(moves_this_level) + " in Level " + str(current_level) + ", " + str(moves_this_game) + " Total Moves"
+	update_level_move_counts_ui()
 
 func update_array(
 	prev_pos: Vector2, new_pos: Vector2, block_dims: Vector2, val: int
@@ -602,18 +614,20 @@ func _break_block(id: int) -> void:
 	print(array)
 
 
-func _on_sound_toggle_check_button_toggled(toggled_on: bool) -> void:
-	print("toggled " + str(toggled_on))
+func _on_bkgd_music_restart_timer_timeout() -> void:
+	
+	bkgd_toggle = get_node(bkgd_toggle_path)
+	sfx_toggle = get_node(sfx_toggle_path)
+	
+	audio_bkgd_music.stream_paused = !sfx_toggle.pressed
+	if bkgd_toggle.button_pressed: 
+		audio_bkgd_music.play()
+
+
+func _on_bkgd_toggle_check_button_toggled(toggled_on: bool) -> void:
 	audio_bkgd_music.stream_paused = !toggled_on
 	audio_bkgd_music.volume_db = 0 if toggled_on else -100
 	if toggled_on:
 		audio_bkgd_music.play()
 	else:
 		audio_bkgd_music.stop()
-		
-
-
-func _on_bkgd_music_restart_timer_timeout() -> void:
-	audio_bkgd_music.stream_paused = !sfx_toggle.pressed
-	if sfx_toggle.button_pressed: 
-		audio_bkgd_music.play()

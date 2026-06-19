@@ -1,15 +1,15 @@
 [gd_scene load_steps=21 format=3 uid="uid://c1nqrhcqdwaqy"]
 
 [ext_resource type="Script" path="res://scenes_scripts/block.gd" id="1_o3usp"]
-[ext_resource type="Texture2D" uid="uid://b8frk5eo3s0gi" path="res://images/tiles/base_tile_white.png" id="2_80yha"]
-[ext_resource type="Material" uid="uid://bbymdpxi5ol6i" path="res://shaders/cloud_shadow.tres" id="2_b0twg"]
-[ext_resource type="Texture2D" uid="uid://dqvjyshmb4s2v" path="res://images/tiles/selected_tile.png" id="3_lgxio"]
-[ext_resource type="Material" uid="uid://ty2wkul4bges" path="res://shaders/cloud.tres" id="4_0n5gt"]
-[ext_resource type="Texture2D" uid="uid://tmeqmnimt82m" path="res://images/palette.png" id="4_kqftf"]
+[ext_resource type="Texture2D" uid="uid://qlwb5s0awuw0" path="res://images/tiles/base_tile_white.png" id="2_80yha"]
+[ext_resource type="Material" uid="uid://dvs834180u8br" path="res://shaders/cloud_shadow.tres" id="2_b0twg"]
+[ext_resource type="Texture2D" uid="uid://dir1qm5nt4uoj" path="res://images/tiles/selected_tile.png" id="3_lgxio"]
+[ext_resource type="Material" uid="uid://cofbxquoq86t6" path="res://shaders/cloud.tres" id="4_0n5gt"]
+[ext_resource type="Texture2D" uid="uid://cg14q0lo7puh1" path="res://images/palette.png" id="4_kqftf"]
 [ext_resource type="LabelSettings" uid="uid://b4qx5deogc1w8" path="res://theme/DEBUG_labelsetting.tres" id="5_280uh"]
-[ext_resource type="Texture2D" uid="uid://3c3c8dqdgsqd" path="res://images/tiles/squircle_50.png" id="5_qbuae"]
-[ext_resource type="Texture2D" uid="uid://byt62kw4mtg1h" path="res://images/tiles/cloud_particle.png" id="6_otir6"]
-[ext_resource type="Texture2D" uid="uid://c8e3cexnny33y" path="res://images/tiles/sun.png" id="8_48sej"]
+[ext_resource type="Texture2D" uid="uid://c341ig8p1on6e" path="res://images/tiles/squircle_50.png" id="5_qbuae"]
+[ext_resource type="Texture2D" uid="uid://dosvuaogf8qp4" path="res://images/tiles/cloud_particle.png" id="6_otir6"]
+[ext_resource type="Texture2D" uid="uid://bmvcfllposp7p" path="res://images/tiles/sun.png" id="8_48sej"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nichk"]
 size = Vector2(120, 120)
@@ -244,7 +244,6 @@ scale_amount_min = 0.0
 color_ramp = SubResource("Gradient_dv0kw")
 
 [node name="Label" type="Label" parent="."]
-visible = false
 z_index = 110
 anchors_preset = 8
 anchor_left = 0.5
@@ -263,7 +262,6 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="DEBUG_array_idxs" type="Label" parent="."]
-visible = false
 z_index = 110
 offset_left = -20.0
 offset_top = 38.0

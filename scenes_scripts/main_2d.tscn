@@ -1,18 +1,18 @@
 [gd_scene load_steps=18 format=3 uid="uid://b68t311mpj4pr"]
 
 [ext_resource type="Script" path="res://block_manager.gd" id="1_5ua2j"]
-[ext_resource type="PackedScene" path="res://scenes_scripts/ui_bkgd.tscn" id="1_ueq1k"]
-[ext_resource type="Texture2D" uid="uid://tmeqmnimt82m" path="res://images/palette.png" id="2_31q7j"]
-[ext_resource type="Texture2D" uid="uid://3aakafrqgw0u" path="res://images/tiles/squircle_border.png" id="3_oqrwf"]
-[ext_resource type="Texture2D" uid="uid://bsyckafe1rorr" path="res://images/tiles/sun_white.png" id="4_xt6tc"]
-[ext_resource type="PackedScene" path="res://scenes_scripts/umbrella.tscn" id="5_jqc7k"]
-[ext_resource type="PackedScene" path="res://scenes_scripts/towel.tscn" id="5_yf03h"]
+[ext_resource type="PackedScene" uid="uid://be06sc2byqitp" path="res://scenes_scripts/ui_bkgd.tscn" id="1_ueq1k"]
+[ext_resource type="Texture2D" uid="uid://cg14q0lo7puh1" path="res://images/palette.png" id="2_31q7j"]
+[ext_resource type="Texture2D" uid="uid://qixnn3lrl0vn" path="res://images/tiles/squircle_border.png" id="3_oqrwf"]
+[ext_resource type="Texture2D" uid="uid://d3yay1s8jl603" path="res://images/tiles/sun_white.png" id="4_xt6tc"]
+[ext_resource type="PackedScene" uid="uid://bucq7kv38e42" path="res://scenes_scripts/umbrella.tscn" id="5_jqc7k"]
+[ext_resource type="PackedScene" uid="uid://w7iyuulj6mn3" path="res://scenes_scripts/towel.tscn" id="5_yf03h"]
 [ext_resource type="PackedScene" uid="uid://c1nqrhcqdwaqy" path="res://scenes_scripts/block.tscn" id="6_6y1a6"]
-[ext_resource type="Texture2D" uid="uid://cpn4chu647sc0" path="res://icon.svg" id="7_8hjc0"]
-[ext_resource type="PackedScene" path="res://scenes_scripts/ui_foreground.tscn" id="8_fc2fl"]
-[ext_resource type="PackedScene" path="res://scenes_scripts/wind_sprite.tscn" id="8_yu60x"]
-[ext_resource type="Texture2D" uid="uid://bjjkkb3eeqpop" path="res://images/icons/sound_icon.png" id="10_2rmo8"]
-[ext_resource type="AudioStream" uid="uid://dq6oaslbqakix" path="res://audio/Blippy Trance.mp3" id="12_7fj5o"]
+[ext_resource type="Texture2D" uid="uid://cihbuf5w5dxhy" path="res://icon.svg" id="7_8hjc0"]
+[ext_resource type="PackedScene" uid="uid://ulc42eij556j" path="res://scenes_scripts/ui_foreground.tscn" id="8_fc2fl"]
+[ext_resource type="PackedScene" uid="uid://clgx4aqsks4fq" path="res://scenes_scripts/wind_sprite.tscn" id="8_yu60x"]
+[ext_resource type="Texture2D" uid="uid://b85smg7sqfd8o" path="res://images/icons/sound_icon.png" id="10_2rmo8"]
+[ext_resource type="AudioStream" uid="uid://dd0ubclm2hp7h" path="res://audio/Blippy Trance.mp3" id="12_7fj5o"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lnwij"]
 size = Vector2(45, 615)
@@ -150,20 +150,6 @@ position = Vector2(64, 66)
 [node name="UI_foreground" parent="." instance=ExtResource("8_fc2fl")]
 z_index = 500
 
-[node name="SoundToggleCheckButton" type="CheckButton" parent="."]
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -80.0
-offset_top = -42.0
-grow_horizontal = 0
-grow_vertical = 0
-button_pressed = true
-icon = ExtResource("10_2rmo8")
-flat = true
-
 [node name="BkgdMusicPlayer" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("12_7fj5o")
 parameters/looping = true
@@ -176,10 +162,34 @@ autostart = true
 
 [node name="SFXPlayer2" type="AudioStreamPlayer2D" parent="."]
 
+[node name="Settings" type="VBoxContainer" parent="."]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -80.0
+offset_top = -84.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="SoundToggleCheckButton" type="CheckButton" parent="Settings"]
+layout_mode = 2
+button_pressed = true
+text = "SFX"
+icon = ExtResource("10_2rmo8")
+flat = true
+
+[node name="BkgdToggleCheckButton" type="CheckButton" parent="Settings"]
+layout_mode = 2
+text = "Music"
+icon = ExtResource("10_2rmo8")
+flat = true
+
 [connection signal="timeout" from="Main2D/InitialLoadTimer" to="Main2D" method="_on_initial_load_timer_timeout"]
 [connection signal="input_event" from="Main2D/Clickable" to="Main2D" method="_on_clickable_input_event"]
-[connection signal="toggled" from="SoundToggleCheckButton" to="Main2D" method="_on_sound_toggle_check_button_toggled"]
 [connection signal="timeout" from="BkgdMusicPlayer/BkgdMusicRestartTimer" to="Main2D" method="_on_bkgd_music_restart_timer_timeout"]
+[connection signal="toggled" from="Settings/BkgdToggleCheckButton" to="Main2D" method="_on_bkgd_toggle_check_button_toggled"]
 
 [editable path="UI_bkgd"]
 [editable path="UI_foreground"]
