@@ -170,6 +170,6 @@ flat = true
 [node name="TouchScreenButton" type="TouchScreenButton" parent="."]
 shape = SubResource("CircleShape2D_kwjdf")
 
+[connection signal="mouse_entered" from="OpenCloseUmbrellaButton" to="." method="_on_open_close_umbrella_button_mouse_entered"]
 [connection signal="pressed" from="OpenCloseUmbrellaButton" to="." method="_on_button_pressed"]
 [connection signal="pressed" from="TouchScreenButton" to="." method="_on_touch_screen_button_pressed"]
-[connection signal="released" from="TouchScreenButton" to="." method="_on_touch_screen_button_released"]

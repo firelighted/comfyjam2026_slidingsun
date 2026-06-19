@@ -59,7 +59,17 @@ label_settings = ExtResource("3_3s60j")
 layout_mode = 2
 text = "Next Level"
 
-[node name="Won_Game_UI" type="VBoxContainer" parent="."]
+[node name="Won_Game_UI" type="ColorRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.3577, 0.73, 0.636925, 0.745098)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Won_Game_UI"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -67,19 +77,19 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -237.0
-offset_top = -55.0
+offset_top = -107.0
 offset_right = 237.0
-offset_bottom = 55.0
+offset_bottom = 107.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="WonLabel2" type="Label" parent="Won_Game_UI"]
+[node name="WonLabel2" type="Label" parent="Won_Game_UI/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "WON GAME!"
 label_settings = ExtResource("3_3s60j")
 
-[node name="Moves_This_Game_Label" type="Label" parent="Won_Game_UI"]
+[node name="Moves_This_Game_Label" type="Label" parent="Won_Game_UI/VBoxContainer"]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 text = "12 TOTAL MOVES"

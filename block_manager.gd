@@ -3,7 +3,7 @@ extends Node2D
 @export var level_button_parent_path : NodePath = "../UI_foreground/LevelButtonParent"
 @export var won_level_ui_path: NodePath = "../UI_foreground/Won_Level_UI"
 @export var won_game_ui_path: NodePath = "../UI_foreground/Won_Game_UI"
-@export var game_moves_counter_label_path: NodePath = "../UI_foreground/Won_Game_UI/Moves_This_Game_Label"
+@export var game_moves_counter_label_path: NodePath = "../UI_foreground/Won_Game_UI/VBoxContainer/Moves_This_Game_Label"
 @export var blocks : Array[Block]
 @export var levels : Array[Array] = [
 	[
@@ -39,8 +39,10 @@ var level_move_counts : Array[int] = []
 var current_level = 0
 var block_prefab: PackedScene = preload("res://scenes_scripts/block.tscn")
 var wind_prefab: PackedScene = preload("res://scenes_scripts/wind_sprite.tscn")
+var umbrella_prefab: PackedScene = preload("res://scenes_scripts/umbrella.tscn")
 @onready var block_parent = $BlockParent
 @onready var breaker_parent = $BreakerParent
+@onready var umbrella_parent = $UmbrellaParent
 
 @onready var audio_sfx = $"../SFXPlayer"
 @onready var audio_sfx2 = $"../SFXPlayer2"
@@ -136,8 +138,8 @@ func receive_block_just_deselected(
 	block: Block, prev_pos: Vector2, new_pos: Vector2
 ):
 	update_array(prev_pos, new_pos, block.dims, block.block_id)
-	check_breaker_tiles()
 	check_for_win()
+	check_breaker_tiles()
 	selected_block = null
 	play_sound(deselected_sound)
 
@@ -250,11 +252,21 @@ func get_levels_from_folder(folder_path: String):
 func spawn_breaker_markers():
 	for wind in breaker_parent.get_children():
 		wind.queue_free()
+	var is_umbrella = true
 	for tile in breaker_tiles:
-		var wind = wind_prefab.instantiate()
+		var wind
+		if is_umbrella:
+			wind = umbrella_prefab.instantiate()
+			wind.started_move.connect(receive_umbrella_started_moving)
+		else:
+			wind = wind_prefab.instantiate()
 		snap_to_position_from_row_col(wind, tile)
 		breaker_parent.add_child(wind)
+		is_umbrella = not is_umbrella
 
+
+func receive_umbrella_started_moving():
+	check_breaker_tiles()
 
 func snap_to_position_from_row_col(node_to_move: Node, grid_pos, dims_of_node = Vector2(1,1)):
 	var new_position = (grid_pos + 0.5 * dims_of_node) * Constants.PIXELS_PER_UNIT

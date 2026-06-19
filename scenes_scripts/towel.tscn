@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://w7iyuulj6mn3"]
+
+[ext_resource type="Texture2D" uid="uid://b4a73rxhlhm8k" path="res://images/ground/beach_towel.png" id="1_po53x"]
+
+[node name="Towel" type="Sprite2D"]
+rotation = 0.785398
+scale = Vector2(0.15, 0.15)
+texture = ExtResource("1_po53x")

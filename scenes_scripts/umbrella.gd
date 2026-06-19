@@ -1,5 +1,6 @@
 extends Node2D
 
+signal started_move
 
 @export var is_moving: bool = false
 @export var anim_player_path: NodePath = "AnimationPlayer"
@@ -10,9 +11,6 @@ var is_open = true
 
 func _ready():
 	anim_player = get_node(anim_player_path)
-	randomize()
-	if  randf() < 0.5: 
-		scale = Vector2(-1, 1)
 	
 	if is_open and randf() < 0.5: 
 		anim_player.play("open_idle")
@@ -25,6 +23,7 @@ func change_state(new_state_is_open):
 	if is_moving: # can't double-click
 		return
 	if is_open != new_state_is_open:
+		started_move.emit()
 		is_moving = true
 		is_open = new_state_is_open
 		if new_state_is_open:
@@ -44,5 +43,5 @@ func _on_touch_screen_button_pressed() -> void:
 	change_state(!is_open)
 
 
-func _on_touch_screen_button_released() -> void:
-	pass
+func _on_open_close_umbrella_button_mouse_entered() -> void:
+	change_state(!is_open)
