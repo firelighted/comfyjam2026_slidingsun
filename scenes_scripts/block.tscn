@@ -1,51 +1,24 @@
-[gd_scene load_steps=22 format=3 uid="uid://c1nqrhcqdwaqy"]
+[gd_scene load_steps=20 format=3 uid="uid://c1nqrhcqdwaqy"]
 
 [ext_resource type="Script" path="res://scenes_scripts/block.gd" id="1_o3usp"]
-[ext_resource type="Shader" path="res://shaders/cloud_tile.gdshader" id="1_ygfc3"]
 [ext_resource type="Texture2D" uid="uid://qlwb5s0awuw0" path="res://images/tiles/base_tile_white.png" id="2_80yha"]
+[ext_resource type="Material" uid="uid://dvs834180u8br" path="res://shaders/cloud_shadow.tres" id="2_b0twg"]
 [ext_resource type="Texture2D" uid="uid://dir1qm5nt4uoj" path="res://images/tiles/selected_tile.png" id="3_lgxio"]
+[ext_resource type="Material" uid="uid://cofbxquoq86t6" path="res://shaders/cloud.tres" id="4_0n5gt"]
 [ext_resource type="Texture2D" uid="uid://cg14q0lo7puh1" path="res://images/palette.png" id="4_kqftf"]
 [ext_resource type="LabelSettings" uid="uid://b4qx5deogc1w8" path="res://theme/DEBUG_labelsetting.tres" id="5_280uh"]
 [ext_resource type="Texture2D" uid="uid://dosvuaogf8qp4" path="res://images/tiles/cloud_particle.png" id="6_otir6"]
+[ext_resource type="Texture2D" uid="uid://bmvcfllposp7p" path="res://images/tiles/sun.png" id="8_48sej"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nichk"]
 size = Vector2(120, 120)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_gsa67"]
-frequency = 0.0073
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_w5jev"]
-seamless = true
-noise = SubResource("FastNoiseLite_gsa67")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_5m840"]
-shader = ExtResource("1_ygfc3")
-shader_parameter/height = 0.35
-shader_parameter/width = 0.34
-shader_parameter/radius = 0.27
-shader_parameter/speed = 0.02
-shader_parameter/edge_source = 0.0
-shader_parameter/edge_color = Color(0, 0, 0, 0.0980392)
-shader_parameter/inner_color = Color(0, 0, 0, 0.411765)
-shader_parameter/noise = SubResource("NoiseTexture2D_w5jev")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_aba2b"]
-shader = ExtResource("1_ygfc3")
-shader_parameter/height = 0.35
-shader_parameter/width = 0.34
-shader_parameter/radius = 0.27
-shader_parameter/speed = 0.02
-shader_parameter/edge_source = 0.0
-shader_parameter/edge_color = Color(0.794272, 0.843837, 0.857672, 1)
-shader_parameter/inner_color = Color(1, 1, 1, 1)
-shader_parameter/noise = SubResource("NoiseTexture2D_w5jev")
 
 [sub_resource type="Gradient" id="Gradient_dv0kw"]
 colors = PackedColorArray(1, 1, 1, 1, 0.55, 0.55, 0.55, 0)
 
 [sub_resource type="LabelSettings" id="LabelSettings_g8qok"]
 font_size = 90
-font_color = Color(0.450648, 0.450648, 0.450648, 1)
+font_color = Color(0.3, 0.135, 0.2615, 0.52549)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_la4ts"]
 size = Vector2(130, 130)
@@ -217,14 +190,14 @@ collision_mask = 0
 shape = SubResource("RectangleShape2D_nichk")
 
 [node name="shadow" type="Sprite2D" parent="Clickable"]
-material = SubResource("ShaderMaterial_5m840")
-position = Vector2(-20, 24)
+material = ExtResource("2_b0twg")
+position = Vector2(-20, 20)
 texture = ExtResource("2_80yha")
 region_rect = Rect2(45, 45, 405, 405)
 
 [node name="base_texture" type="Sprite2D" parent="Clickable"]
 z_index = 100
-material = SubResource("ShaderMaterial_aba2b")
+material = ExtResource("4_0n5gt")
 texture = ExtResource("2_80yha")
 region_rect = Rect2(45, 45, 405, 405)
 
@@ -233,19 +206,15 @@ z_index = 100
 scale = Vector2(0.9, 0.9)
 texture = ExtResource("3_lgxio")
 
-[node name="special_texture_border" type="Sprite2D" parent="Clickable"]
-z_index = 100
-scale = Vector2(0.9, 0.9)
-texture = ExtResource("3_lgxio")
-
-[node name="special_texture" type="Sprite2D" parent="."]
-z_index = 100
-region_rect = Rect2(45, 45, 405, 405)
-
 [node name="palette" type="Sprite2D" parent="."]
 visible = false
 position = Vector2(-3, 81)
 texture = ExtResource("4_kqftf")
+
+[node name="special_texture" type="Sprite2D" parent="."]
+z_index = 150
+texture = ExtResource("8_48sej")
+region_rect = Rect2(45, 45, 405, 405)
 
 [node name="Particles" type="CPUParticles2D" parent="."]
 z_index = 500

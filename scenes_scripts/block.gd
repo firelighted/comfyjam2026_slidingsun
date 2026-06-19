@@ -72,16 +72,16 @@ func set_variables(new_block_id, width: int, height: int, row: int, col: int):
 		Constants.THEME_COLORS[block_id  % len(Constants.THEME_COLORS)]
 	)
 	$Label.text = str(block_id) if block_id else ""
-	$Clickable/shadow.visible = bool(block_id)
-	$Clickable/base_texture.visible = bool(block_id)
-	$Clickable/special_texture_border.visible = not bool(block_id)
-	
+	#$Clickable/shadow.visible = bool(block_id)
+	#$Clickable/base_texture.visible = bool(block_id)
+	# $Clickable/special_texture_border.visible = not bool(block_id)
 		
 	position = Vector2(row + 0.5 * width, col + 0.5 * height) * Constants.PIXELS_PER_UNIT  
 	$Clickable.scale = Vector2(width, height)
 	$CollisionShape2D.scale = Vector2(width, height)
 	if block_id == 0:
 		$special_texture.texture = special_texture
+	$special_texture.visible = not bool(block_id)
 
 func get_input(): # arrow keys can move selected tile
 	var input_dir : Vector2 = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")

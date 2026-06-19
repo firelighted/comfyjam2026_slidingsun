@@ -42,7 +42,6 @@ var wind_prefab: PackedScene = preload("res://scenes_scripts/wind_sprite.tscn")
 var umbrella_prefab: PackedScene = preload("res://scenes_scripts/umbrella.tscn")
 @onready var block_parent = $BlockParent
 @onready var breaker_parent = $BreakerParent
-@onready var umbrella_parent = $UmbrellaParent
 
 @onready var audio_sfx = $"../SFXPlayer"
 @onready var audio_sfx2 = $"../SFXPlayer2"
