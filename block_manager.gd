@@ -342,6 +342,7 @@ func check_for_win():
 
 func load_level(level_idx:int, add_to_total: bool=false):
 	level_button_parent.get_child(current_level).self_modulate = Color.WHITE
+	wind_tiles_current_level = level_idx
 	# record move counts
 	if add_to_total:
 		level_move_counts[current_level] = moves_this_level
@@ -351,7 +352,7 @@ func load_level(level_idx:int, add_to_total: bool=false):
 		array = levels[level_idx].duplicate(true)
 		x_size = 4
 		y_size = 4
-		breaker_tiles = breaker_tiles_levels[level_idx].duplicate(true)
+		breaker_tiles = breaker_tiles_levels[wind_tiles_current_level].duplicate(true)
 		#breaker_tiles.append_array(breaker_tiles_outside)
 		cells = x_size * y_size
 		level_button_parent.get_child(level_idx).self_modulate = Constants.THEME_COLORS[3]
@@ -365,7 +366,7 @@ func load_level(level_idx:int, add_to_total: bool=false):
 		push_warning(levels)
 	init_array()
 	spawn_blocks()
-	spawn_breaker_markers()
+	spawn_breaker_markers()  # depends on wind_tiles_current_level
 	won_level_ui.visible = false
 	won_game_ui.visible = false
 	moves_this_level = 0
@@ -392,6 +393,7 @@ func get_levels_from_folder(folder_path: String):
 	return resources
 
 func spawn_breaker_markers():
+	breaker_tiles = breaker_tiles_levels[wind_tiles_current_level].duplicate(true)
 	for wind in breaker_parent.get_children():
 		wind.queue_free()
 	var is_umbrella = true
@@ -709,3 +711,8 @@ func _on_bkgd_toggle_check_button_toggled(toggled_on: bool) -> void:
 		audio_bkgd_music.play()
 	else:
 		audio_bkgd_music.stop()
+
+var wind_tiles_current_level = 0
+func _on_swap_wind_umbrella_started_move() -> void:
+	wind_tiles_current_level = (wind_tiles_current_level + 1) % len(breaker_tiles_levels)
+	spawn_breaker_markers()

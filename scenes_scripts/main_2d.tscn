@@ -149,6 +149,9 @@ position = Vector2(64, 66)
 [node name="UI_foreground" parent="." instance=ExtResource("8_fc2fl")]
 z_index = 500
 
+[node name="SwapWindUmbrella" parent="." instance=ExtResource("5_jqc7k")]
+position = Vector2(592, 96)
+
 [node name="BkgdMusicPlayer" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("12_7fj5o")
 parameters/looping = true
@@ -185,8 +188,10 @@ flat = true
 
 [connection signal="timeout" from="Main2D/InitialLoadTimer" to="Main2D" method="_on_initial_load_timer_timeout"]
 [connection signal="input_event" from="Main2D/Clickable" to="Main2D" method="_on_clickable_input_event"]
+[connection signal="started_move" from="SwapWindUmbrella" to="Main2D" method="_on_swap_wind_umbrella_started_move"]
 [connection signal="timeout" from="BkgdMusicPlayer/BkgdMusicRestartTimer" to="Main2D" method="_on_bkgd_music_restart_timer_timeout"]
 [connection signal="toggled" from="Settings/BkgdToggleCheckButton" to="Main2D" method="_on_bkgd_toggle_check_button_toggled"]
 
 [editable path="UI_bkgd"]
 [editable path="UI_foreground"]
+[editable path="SwapWindUmbrella"]

@@ -44,4 +44,4 @@ func _on_touch_screen_button_pressed() -> void:
 
 
 func _on_open_close_umbrella_button_mouse_entered() -> void:
-	change_state(!is_open)
+	pass #change_state(!is_open)
