@@ -58,17 +58,23 @@ extends Node2D
 		-1, 0, 0, 0,
 		2, 2, 2, -1,
 	],
+	#[
+		#-1, -1, -1, -1,
+		#-1, -1, -1, -1,
+		#-1, 0, 0, 0,
+		#-1, -1, -1, -1,
+	#],
 ]
 
 
 const breaker_tiles_level_0 : Array[Vector2] = [Vector2(1,0), Vector2(2,0)]
 const breaker_tiles_level_1 : Array[Vector2] = [Vector2(0, 3), Vector2(1, 3)]
-const breaker_tiles_level_2 : Array[Vector2] = [Vector2(3, 0), Vector2(2,0)]
+const breaker_tiles_level_2 : Array[Vector2] = [Vector2(2, 0), Vector2(3,0)]
 const breaker_tiles_level_3 : Array[Vector2] = [Vector2(0, 2), Vector2(0, 3)]
 const breaker_tiles_level_4 : Array[Vector2] = [Vector2(0, 0), Vector2(1,0)]
 const breaker_tiles_level_5 : Array[Vector2] = [Vector2(1, 0), Vector2(2,0)]
 const breaker_tiles_level_6 : Array[Vector2] = [Vector2(2, 3), Vector2(3,3)]
-const breaker_tiles_level_7 : Array[Vector2] = [Vector2(1, 0), Vector2(2,0)]
+#const breaker_tiles_level_7 : Array[Vector2] = [Vector2(1, 0), Vector2(2,0)]
 # locations for wind breaker tiles in each level
 var breaker_tiles_levels = [
 	breaker_tiles_level_0,
@@ -78,7 +84,7 @@ var breaker_tiles_levels = [
 	breaker_tiles_level_4,
 	breaker_tiles_level_5,
 	breaker_tiles_level_6,
-	breaker_tiles_level_7
+	#breaker_tiles_level_7
 ]
 var level_move_counts : Array[int] = []
 var current_level = 0
