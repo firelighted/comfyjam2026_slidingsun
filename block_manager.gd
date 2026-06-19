@@ -48,6 +48,12 @@ extends Node2D
 		5,6,7,1,
 		-1,-1,-1,9
 	],
+	[
+		-1, -1, -1, -1,
+		-1, -1, -1, -1,
+		-1, 0, 0, 0,
+		-1, -1, -1, -1,
+	],
 ]
 
 
@@ -58,6 +64,7 @@ const breaker_tiles_level_3 : Array[Vector2] = [Vector2(0, 2), Vector2(0, 3)]
 const breaker_tiles_level_4 : Array[Vector2] = [Vector2(0, 0), Vector2(1,0)]
 const breaker_tiles_level_5 : Array[Vector2] = [Vector2(1, 0), Vector2(2,0)]
 const breaker_tiles_level_6 : Array[Vector2] = [Vector2(2, 3), Vector2(3,3)]
+const breaker_tiles_level_7 : Array[Vector2] = [Vector2(1, 0), Vector2(2,0)]
 # locations for wind breaker tiles in each level
 var breaker_tiles_levels = [
 	breaker_tiles_level_0,
@@ -66,7 +73,8 @@ var breaker_tiles_levels = [
 	breaker_tiles_level_3,
 	breaker_tiles_level_4,
 	breaker_tiles_level_5,
-	breaker_tiles_level_6
+	breaker_tiles_level_6,
+	breaker_tiles_level_7
 ]
 var level_move_counts : Array[int] = []
 var current_level = 0
@@ -559,6 +567,8 @@ func _find_lowest_unoccupied_id() -> int:
 ### and ordered by x value
 func _break_block(id: int) -> void:
 	var N = breaker_tiles.size()
+	var original_width # width of the original block
+	var x_offset # offset of the bottom-left corner of a block from the breaker tile
 	
 	for i in N:
 		var tile = breaker_tiles[i]
@@ -569,17 +579,27 @@ func _break_block(id: int) -> void:
 		if i == 0:
 			# if the tile is to the left of the breaking tile, then
 			# its width should be increased to match
-			# the corresponding case for on the right isn't dealt with (but should be)
-			var x_offset = max(tile.x - b.grid_pos.x, 0)
-
+			x_offset = max(tile.x - b.grid_pos.x, 0)
+			original_width = b.dims.x
 			b.set_variables(id_at_tile, 1 + x_offset, 1, tile.x - x_offset, tile.y)
 		else: # second loop: create new blocks and add them to the level
 			var new_id = _find_lowest_unoccupied_id()
 			set_array(new_id, tile.x, tile.y)
+			
+			# last iteration
+			if i == N - 1:
+				var extra = original_width - N - x_offset
+				
+				# if there are extra tiles to the right, then
+				# update their ids in the level array
+				for j in extra:
+					set_array(new_id, tile.x + j + 1, tile.y)
+			
 			blocks.push_back(_create_block(new_id, tile.x, tile.y))
 			b.show_break()  # particles
 			play_sound(break_block_sound, true)
-		
+	
+	print(array)
 
 
 func _on_sound_toggle_check_button_toggled(toggled_on: bool) -> void:
