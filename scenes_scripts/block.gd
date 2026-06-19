@@ -92,8 +92,14 @@ func start_drag(is_touch: bool=false):
 	$"../../../DEBUG_dragoffset".clear_points()
 	$"../../../DEBUG_dragoffset".add_point(get_global_mouse_position())
 	$"../../../DEBUG_dragoffset".add_point(global_position)
+	update_anim("selected")
 	just_selected.emit(self, block_id, grid_pos)
 
+func update_anim(animation, just_queue=false):
+	if just_queue: 
+		$AnimationPlayer.queue(animation)
+	else:
+		$AnimationPlayer.play(animation)
 
 func end_drag(is_touch:bool=false):
 	var prev_pos = grid_pos
@@ -102,7 +108,11 @@ func end_drag(is_touch:bool=false):
 	
 	set_row_col_from_pos()
 	snap_to_position_from_row_col()
-	
+	if prev_pos.x != grid_pos.x:
+		update_anim("impact_x")
+	else:
+		update_anim("impact_y")
+	update_anim("idle", true)
 	just_deselected.emit(self, prev_pos, grid_pos)
 
 func get_drag():
